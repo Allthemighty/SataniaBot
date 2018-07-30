@@ -2,6 +2,7 @@ import discord
 import random
 import requests
 from discord.ext import commands
+from dbconn import *
 import os
 
 version = '2.3'
@@ -16,6 +17,7 @@ async def on_ready():
     print("Back in action baby! SATANIA VERSION {}".format(version))
     print("Logged in as: {}||{}#{}".format(bot.user.id, bot.user.name, bot.user.discriminator))
     print("Status loaded as: |{}| and streaming this url {}".format(status_playing, twitch_url))
+    print(conn.status)
     await bot.change_presence(activity=discord.Streaming(name=status_playing, url=twitch_url))
 
 
