@@ -15,13 +15,14 @@ status_playing = "Playing with myself"
 async def on_ready():
     bot.load_extension('SimpleCommands')
     bot.load_extension('Reactions')
-    print("Back in action baby! SATANIA VERSION {}".format(version))
-    print("Logged in as: {}||{}#{}".format(bot.user.id, bot.user.name, bot.user.discriminator))
-    print("Status loaded as: |{}| and streaming this url {}".format(status_playing, twitch_url))
+    print("I am the Great Archdemon Satanichia, Queen of all Hell!\n")
+    print("SATANIA Version: {}".format(version))
+    print("Bot id: {} | Bot name {} | Bot discriminator: #{}".format(bot.user.id, bot.user.name, bot.user.discriminator))
+    print("Bot status: '{}' | Stream url: {}".format(status_playing, twitch_url))
     if conn.status:
-        print("Database is connected.")
+        print("Database connection: True")
     else:
-        print("Can't connect to database, please check ASAP.")
+        print("Database connection: False, check ASAP.")
     await bot.change_presence(activity=discord.Streaming(name=status_playing, url=twitch_url))
 
 
