@@ -5,7 +5,7 @@ from discord.ext import commands
 from dbconn import *
 import os
 
-version = '2.3'
+version = '2.31'
 bot = commands.Bot(command_prefix=".", description="A silly bot for people with a low IQ.")
 twitch_url = "https://www.twitch.tv/ninjatuna6"
 status_playing = "Playing with myself"
@@ -14,10 +14,14 @@ status_playing = "Playing with myself"
 @bot.event
 async def on_ready():
     bot.load_extension('SimpleCommands')
+    bot.load_extension('Reactions')
     print("Back in action baby! SATANIA VERSION {}".format(version))
     print("Logged in as: {}||{}#{}".format(bot.user.id, bot.user.name, bot.user.discriminator))
     print("Status loaded as: |{}| and streaming this url {}".format(status_playing, twitch_url))
-    print(conn.status)
+    if conn.status:
+        print("Database is connected.")
+    else:
+        print("Can't connect to database, please check ASAP.")
     await bot.change_presence(activity=discord.Streaming(name=status_playing, url=twitch_url))
 
 
@@ -49,7 +53,6 @@ async def on_message(message):
                                            "i'll bless you with my glorious knowledge: *{}*".format(advice))
 
     await bot.process_commands(message)
-
 
 
 bot.run(os.getenv('TOKEN'))
