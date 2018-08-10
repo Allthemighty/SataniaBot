@@ -13,8 +13,6 @@ class ReactUtils:
         cur.close()
         if rows:
             return rows
-        else:
-            return False
 
 
 class Reactions:
