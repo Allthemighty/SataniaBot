@@ -21,7 +21,7 @@ class Reactions:
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def dbping(self, ctx):
         """|Ping database."""
@@ -29,7 +29,8 @@ class Reactions:
 
     @commands.command()
     @commands.is_owner()
-    async def reactlist(self, ctx):
+    @commands.has_permissions(administrator=True)
+    async def listr(self, ctx):
         """|List all reactions."""
         sql = "SELECT * FROM reactions"
         cur = conn.cursor()
@@ -40,6 +41,17 @@ class Reactions:
         for row in rows:
             response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1], row[2])
         await ctx.send("```{}```".format(response))
+
+    @commands.command()
+    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
+    async def addr(self, ctx, url, keyword):
+        """|Add a reaction."""
+        sql = "INSERT INTO reactions (url, keyword) VALUES ('%s', '%s')" % (url, keyword)
+        cur = conn.cursor()
+        cur.execute(sql)
+        cur.close()
+        await ctx.send("Reaction added")
 
 
 def setup(bot):
