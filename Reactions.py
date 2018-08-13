@@ -42,12 +42,11 @@ class Reactions:
 
     @commands.command()
     @commands.is_owner()
-    @commands.has_permissions(administrator=True)
     async def addr(self, ctx, url, keyword):
         """|Add a reaction."""
-        sql = "INSERT INTO reactions (url, keyword) VALUES ('%s', '%s')" % (url, keyword)
+        sql = "INSERT INTO reactions (url, keyword) VALUES (%s, %s)"
         cur = conn.cursor()
-        cur.execute(sql)
+        cur.execute(sql, (url, keyword))
         cur.close()
         await ctx.send("Reaction added")
 
