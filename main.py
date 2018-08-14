@@ -52,12 +52,9 @@ async def on_message(message):
                     for idx, item in enumerate(reactions):
                         if not validators.url(item[1]):
                             reactions.pop(idx)
-                if len(reactions) > 1:
-                    # send a random response from the remaining reactions
-                    r = random.choice(reactions)
-                    await message.channel.send(r[1])
-                else:
-                    await message.channel.send(reactions[1])
+                # send a random response from the remaining reactions
+                r = random.choice(reactions)
+                await message.channel.send(r[1])
         # if bot is mentioned in a message
         elif "@386627978618077184" in msg:
             endpoint = 'http://api.adviceslip.com/advice'
@@ -68,6 +65,5 @@ async def on_message(message):
                                        "i'll bless you with my glorious knowledge: *{}*".format(advice))
 
         await bot.process_commands(message)
-
 
 bot.run(os.getenv('TOKEN'))
