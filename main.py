@@ -38,7 +38,7 @@ async def on_message(message):
     message_chance = 30
     gif_chance = 10
 
-    if not re.match(r"\..+\s", msg):
+    if not re.match(r"\..+\s", msg) and message.author.id is not 386627978618077184:
         if random_number <= message_chance:
             reactions = Ru.get_reacts(msg)
             if reactions:
