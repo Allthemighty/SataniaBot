@@ -37,7 +37,7 @@ class Reactions:
         cur.close()
         response = ""
         for row in rows:
-            response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1], row[2])
+            response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:35], row[2])
         await ctx.send("```{}```".format(response))
 
     @commands.command()

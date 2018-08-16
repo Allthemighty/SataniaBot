@@ -64,6 +64,6 @@ async def on_message(message):
             await message.channel.send("Somebody asked for my assistance? Fine then, "
                                        "i'll bless you with my glorious knowledge: *{}*".format(advice))
 
-        await bot.process_commands(message)
+    await bot.process_commands(message)
 
 bot.run(os.getenv('TOKEN'))
