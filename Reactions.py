@@ -27,18 +27,23 @@ class Reactions:
 
     @commands.command()
     @commands.is_owner()
-    @commands.has_permissions(administrator=True)
-    async def listr(self, ctx):
+    async def listr(self, ctx, page_count=1):
         """|List all reactions."""
-        sql = "SELECT * FROM reactions"
+        page_constant = 20
+        low_bound = (page_count - 1) * page_constant + 1
+        high_bound = page_constant * page_count
+        sql = "SELECT  iid, url, keyword" \
+              " FROM (SELECT  iid , url, keyword , " \
+              "ROW_NUMBER() OVER (ORDER BY iid) AS rn" \
+              " FROM reactions) q WHERE rn BETWEEN %s and %s"
         cur = conn.cursor()
-        cur.execute(sql)
+        cur.execute(sql, (low_bound, high_bound))
         rows = cur.fetchall()
         cur.close()
         response = ""
         for row in rows:
-            response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:35], row[2])
-        await ctx.send("```{}```".format(response))
+            response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2])
+        await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
 
     @commands.command()
     @commands.is_owner()
@@ -49,6 +54,16 @@ class Reactions:
         cur.execute(sql, (url, keyword))
         cur.close()
         await ctx.send("Reaction added")
+
+    @commands.command()
+    @commands.is_owner()
+    async def deleter(self, ctx, reaction_id):
+        """|Delete a reaction."""
+        sql = "DELETE FROM reactions WHERE iid = %s"
+        cur = conn.cursor()
+        cur.execute(sql, (reaction_id,))
+        cur.close()
+        await ctx.send("Reaction deleted")
 
 
 def setup(bot):

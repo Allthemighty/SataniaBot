@@ -9,7 +9,7 @@ from discord.ext import commands
 from Reactions import ReactUtils as Ru
 from dbconn import *
 
-version = '2.32'
+version = '2.35'
 bot = commands.Bot(command_prefix=".", description="A silly bot for people with a low IQ.")
 twitch_url = "https://www.twitch.tv/ninjatuna6"
 status_playing = "Playing with Tuna"
@@ -35,10 +35,10 @@ async def on_ready():
 async def on_message(message):
     msg = message.content
     random_number = int(random.uniform(1, 100))
-    message_chance = 30
+    message_chance = 25
     gif_chance = 10
 
-    if not re.match(r"\..+\s", msg) and message.author.id is not 386627978618077184:
+    if not message.author.bot:
         if random_number <= message_chance:
             reactions = Ru.get_reacts(msg)
             if reactions:
