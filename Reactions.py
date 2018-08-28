@@ -26,7 +26,6 @@ class Reactions:
         await ctx.send("Conn = {}".format(conn.status))
 
     @commands.command()
-    @commands.is_owner()
     async def listr(self, ctx, page_count=1):
         """|List all reactions."""
         page_constant = 20
@@ -45,7 +44,7 @@ class Reactions:
             response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2])
         await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def addr(self, ctx, url, keyword):
         """|Add a reaction."""
@@ -55,7 +54,7 @@ class Reactions:
         cur.close()
         await ctx.send("Reaction added")
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""
