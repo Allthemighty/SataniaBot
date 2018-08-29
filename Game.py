@@ -1,9 +1,11 @@
 import time
-
 import discord
-from discord.ext import commands
 
+from discord.ext import commands
 from dbconn import *
+
+
+DELETE_TIME = 15
 
 
 class GameUtils:
@@ -43,6 +45,7 @@ class GameUtils:
 
 
 class Game:
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -56,7 +59,7 @@ class Game:
         embed.add_field(name="Score", value=user[2], inline=True)
         embed.add_field(name="Reactions triggered", value=user[3], inline=True)
         await ctx.send(embed=embed)
-        time.sleep(15)
+        time.sleep(DELETE_TIME)
         await ctx.message.delete()
 
     @commands.command(aliases=['lb'])
@@ -80,10 +83,10 @@ class Game:
             else:
                 response += "#{} Score: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
         await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
-        time.sleep(15)
+        time.sleep(DELETE_TIME)
         await ctx.message.delete()
 
-    @commands.command(aliases=['g'])
+    @commands.command(aliases=['g'], hidden=True)
     @commands.is_owner()
     async def grant(self, ctx, score, mention):
         """|Gives an user points"""
@@ -91,7 +94,7 @@ class Game:
         if not user.bot:
             GameUtils.increment_score(user.id, score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
-            time.sleep(15)
+            time.sleep(DELETE_TIME)
             await ctx.message.delete()
 
 
