@@ -8,7 +8,7 @@ from Reactions import ReactUtils as Ru
 from Game import GameUtils as Gu
 from dbconn import *
 
-version = '2.4'
+version = '2.42'
 bot = commands.Bot(command_prefix=".", description="A silly bot for people with a low IQ.")
 twitch_url = "https://www.twitch.tv/ninjatuna6"
 status_playing = "Playing with Tuna"

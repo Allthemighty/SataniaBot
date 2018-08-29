@@ -1,3 +1,5 @@
+import time
+
 import discord
 from discord.ext import commands
 
@@ -54,13 +56,19 @@ class Game:
         embed.add_field(name="Score", value=user[2], inline=True)
         embed.add_field(name="Reactions triggered", value=user[3], inline=True)
         await ctx.send(embed=embed)
+        time.sleep(15)
+        await ctx.message.delete()
 
     @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, page_count=1):
-        page_constant = 20
+        """|Shows the leaderboard for the IQ games"""
+        page_constant = 15
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
-        sql = "select *, row_number() OVER (order by score DESC, dname ASC) as rnum from users"
+        sql = "SELECT  * " \
+              "FROM (SELECT  *, ROW_NUMBER() OVER " \
+              "(ORDER BY score DESC, dname ASC ) AS rn FROM users) q " \
+              "WHERE rn BETWEEN %s and %s"
         cur = conn.cursor()
         cur.execute(sql, (low_bound, high_bound))
         rows = cur.fetchall()
@@ -72,6 +80,19 @@ class Game:
             else:
                 response += "#{} Score: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
         await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
+        time.sleep(15)
+        await ctx.message.delete()
+
+    @commands.command(aliases=['g'])
+    @commands.is_owner()
+    async def grant(self, ctx, score, mention):
+        """|Gives an user points"""
+        user = ctx.message.mentions[0]
+        if not user.bot:
+            GameUtils.increment_score(user.id, score)
+            await ctx.send("User {} has been given **{}** points.".format(user, score))
+            time.sleep(15)
+            await ctx.message.delete()
 
 
 def setup(bot):
