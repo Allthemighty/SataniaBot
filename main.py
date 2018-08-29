@@ -62,6 +62,7 @@ async def on_message(message):
                 if reactions:
                     r = random.choice(reactions)
                     await message.channel.send(r[1])
+                    Gu.increment_rcounter(did, 1)
                     Gu.increment_score(did, 1)
                 else:
                     return

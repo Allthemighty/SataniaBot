@@ -42,7 +42,7 @@ class Reactions:
         response = ""
         for row in rows:
             response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2])
-        await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
+        await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
 
     @commands.command(hidden=True)
     @commands.is_owner()
