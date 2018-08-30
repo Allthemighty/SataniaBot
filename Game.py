@@ -115,30 +115,36 @@ class Game:
         flip_full = ''
         flip_image = ''
         bet = int(bet)
-        if result is 'h':
-            flip_full = 'heads'
-            flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690453594374156/sataniahead.png'
-        elif result is 't':
-            flip_full = 'tails'
-            flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690459944550410/sataniatail.png'
-        if guess in flip_arguments:
-            if bet >= 10:
-                if guess is result:
-                    won_points = round((bet * 1.5) - bet)
-                    embed = discord.Embed(title="You flipped {}".format(flip_full),
-                                          description="You gain {} IQ points!".format(won_points), color=0xe41b71)
-                    embed.set_image(url=flip_image)
-                    GameUtils.increment_score(ctx.message.author.id, won_points)
-                elif guess is not result:
-                    embed = discord.Embed(title="{} flipped {}".format(ctx.message.author, flip_full),
-                                          description="You lost.", color=0xe41b71)
-                    GameUtils.reduce_score(ctx.message.author.id, bet)
-                    embed.set_image(url=flip_image)
-                await ctx.send(embed=embed)
-            else:
-                await ctx.send('Please enter a bet of at least 10.')
+        author = ctx.message.author.id
+        balance = GameUtils.user_get(author)[2]
+
+        if balance < bet:
+            await ctx.send("You don't have enough points for that.")
         else:
-            await ctx.send('Please send a valid command')
+            if result is 'h':
+                flip_full = 'heads'
+                flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690453594374156/sataniahead.png'
+            elif result is 't':
+                flip_full = 'tails'
+                flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690459944550410/sataniatail.png'
+            if guess in flip_arguments:
+                if bet >= 10:
+                    if guess is result:
+                        won_points = round((bet * 1.5) - bet)
+                        embed = discord.Embed(title="You flipped {}".format(flip_full),
+                                              description="You gain {} IQ points!".format(won_points), color=0xe41b71)
+                        embed.set_image(url=flip_image)
+                        GameUtils.increment_score(author, won_points)
+                    elif guess is not result:
+                        embed = discord.Embed(title="{} flipped {}".format(ctx.message.author, flip_full),
+                                              description="You lost.", color=0xe41b71)
+                        GameUtils.reduce_score(author, bet)
+                        embed.set_image(url=flip_image)
+                    await ctx.send(embed=embed)
+                else:
+                    await ctx.send('Please enter a bet of at least 10.')
+            else:
+                await ctx.send('Please send a valid command')
 
 
 def setup(bot):
