@@ -1,9 +1,9 @@
 import time
 import discord
+import random
 
 from discord.ext import commands
 from dbconn import *
-
 
 DELETE_TIME = 15
 
@@ -38,6 +38,16 @@ class GameUtils:
         cur.execute("UPDATE users SET score = score + %s WHERE did = %s", (score, self))
         cur.close()
 
+    def reduce_score(self, score):
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET score = score - %s WHERE did = %s", (score, self))
+        cur.close()
+
+    def multiply_score(self, score):
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET score = score * %s WHERE did = %s", (score, self))
+        cur.close()
+
     def increment_rcounter(self, score):
         cur = conn.cursor()
         cur.execute("UPDATE users SET reactions_triggered = reactions_triggered + %s WHERE did = %s", (score, self))
@@ -49,14 +59,25 @@ class Game:
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(aliases=['g'], hidden=True)
+    @commands.is_owner()
+    async def grant(self, ctx, score, mention):
+        """|Gives an user points"""
+        user = ctx.message.mentions[0]
+        if not user.bot:
+            GameUtils.increment_score(user.id, score)
+            await ctx.send("User {} has been given **{}** points.".format(user, score))
+            time.sleep(DELETE_TIME)
+            await ctx.message.delete()
+
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
         """|Check how high your IQ is"""
         did = ctx.message.author.id
         user = GameUtils.user_get(did)
         embed = discord.Embed(title="Profile for {}".format(user[1]),
-                              description="Look at your stats for Satania\'s IQGame", color=0xd309ea)
-        embed.add_field(name="Score", value=user[2], inline=True)
+                              description="Look at your stats for Satania\'s IQ games", color=0xe41b71)
+        embed.add_field(name="IQ", value=user[2], inline=True)
         embed.add_field(name="Reactions triggered", value=user[3], inline=True)
         await ctx.send(embed=embed)
         time.sleep(DELETE_TIME)
@@ -79,23 +100,45 @@ class Game:
         response = ""
         for row in rows:
             if row[4] < 10:
-                response += "#{}  Score: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
+                response += "#{}  IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
             else:
-                response += "#{} Score: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
+                response += "#{} IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
         await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
         time.sleep(DELETE_TIME)
         await ctx.message.delete()
 
-    @commands.command(aliases=['g'], hidden=True)
-    @commands.is_owner()
-    async def grant(self, ctx, score, mention):
-        """|Gives an user points"""
-        user = ctx.message.mentions[0]
-        if not user.bot:
-            GameUtils.increment_score(user.id, score)
-            await ctx.send("User {} has been given **{}** points.".format(user, score))
-            time.sleep(DELETE_TIME)
-            await ctx.message.delete()
+    @commands.command()
+    async def flip(self, ctx, bet, guess):
+        """|Flip a coin"""
+        flip_arguments = ['h', 't']
+        result = random.choice(flip_arguments)
+        flip_full = ''
+        flip_image = ''
+        bet = int(bet)
+        if result is 'h':
+            flip_full = 'heads'
+            flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690453594374156/sataniahead.png'
+        elif result is 't':
+            flip_full = 'tails'
+            flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690459944550410/sataniatail.png'
+        if guess in flip_arguments:
+            if bet >= 10:
+                if guess is result:
+                    won_points = round((bet * 1.5) - bet)
+                    embed = discord.Embed(title="You flipped {}".format(flip_full),
+                                          description="You gain {} IQ points!".format(won_points), color=0xe41b71)
+                    embed.set_image(url=flip_image)
+                    GameUtils.increment_score(ctx.message.author.id, won_points)
+                elif guess is not result:
+                    embed = discord.Embed(title="{} flipped {}".format(ctx.message.author, flip_full),
+                                          description="You lost.", color=0xe41b71)
+                    GameUtils.reduce_score(ctx.message.author.id, bet)
+                    embed.set_image(url=flip_image)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send('Please enter a bet of at least 10.')
+        else:
+            await ctx.send('Please send a valid command')
 
 
 def setup(bot):
