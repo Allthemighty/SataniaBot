@@ -110,11 +110,11 @@ class Game:
     @commands.command()
     async def flip(self, ctx, bet, guess):
         """|Flip a coin"""
+        bet = int(bet)
         flip_arguments = ['h', 't']
         result = random.choice(flip_arguments)
         flip_full = ''
         flip_image = ''
-        bet = int(bet)
         author = ctx.message.author.id
         balance = GameUtils.user_get(author)[2]
 
@@ -138,13 +138,49 @@ class Game:
                     elif guess is not result:
                         embed = discord.Embed(title="{} flipped {}".format(ctx.message.author, flip_full),
                                               description="You lost.", color=0xe41b71)
-                        GameUtils.reduce_score(author, bet)
                         embed.set_image(url=flip_image)
+                        GameUtils.reduce_score(author, bet)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send('Please enter a bet of at least 10.')
             else:
                 await ctx.send('Please send a valid command')
+
+    @commands.command()
+    async def roll(self, ctx, bet):
+        """|Roll the dice"""
+        bet = int(bet)
+        author = ctx.message.author.id
+        balance = GameUtils.user_get(author)[2]
+        r_number = int(random.uniform(1, 101))
+        won_points = 0
+        multipliers = [0, 0.8, 1.2, 1.5, 1.7]
+
+        if balance < bet:
+            await ctx.send("You don't have enough points for that.")
+        else:
+            if bet >= 10:
+                embed = discord.Embed(title="You rolled a {}".format(r_number), color=0xe41b71)
+                if r_number <= 20:
+                    won_points = round((bet * multipliers[0]))
+                elif r_number <= 50:
+                    won_points = round((bet * multipliers[1]))
+                elif r_number <= 70:
+                    won_points = round((bet * multipliers[2]) - bet)
+                elif r_number <= 90:
+                    won_points = round((bet * multipliers[3]) - bet)
+                elif r_number <= 100:
+                    won_points = round((bet * multipliers[4]) - bet)
+
+                if won_points < bet:
+                    embed.description = "You lost {} points.".format(won_points)
+                    GameUtils.reduce_score(author, won_points)
+                else:
+                    embed.description = "You won {} points!".format(won_points)
+                    GameUtils.increment_score(author, won_points)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send('Please enter a bet of at least 10')
 
 
 def setup(bot):
