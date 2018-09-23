@@ -1,6 +1,7 @@
 import time
 import discord
 import random
+import asyncio
 
 from discord.ext import commands
 from dbconn import *
@@ -15,10 +16,7 @@ class GameUtils:
         cur.execute("SELECT * FROM users WHERE did = %s ", (self,))
         row = cur.fetchone()
         cur.close()
-        if row:
-            return True
-        else:
-            return False
+        return True if row else False
 
     def user_get(self):
         cur = conn.cursor()
@@ -61,13 +59,13 @@ class Game:
 
     @commands.command(aliases=['g'], hidden=True)
     @commands.is_owner()
-    async def grant(self, ctx, score, mention):
+    async def grant(self, ctx, score):
         """|Gives an user points"""
         user = ctx.message.mentions[0]
         if not user.bot:
             GameUtils.increment_score(user.id, score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
-            time.sleep(DELETE_TIME)
+            asyncio.sleep(DELETE_TIME)
             await ctx.message.delete()
 
     @commands.command(aliases=['p'])
@@ -80,7 +78,7 @@ class Game:
         embed.add_field(name="IQ", value=user[2], inline=True)
         embed.add_field(name="Reactions triggered", value=user[3], inline=True)
         await ctx.send(embed=embed)
-        time.sleep(DELETE_TIME)
+        asyncio.sleep(DELETE_TIME)
         await ctx.message.delete()
 
     @commands.command(aliases=['lb'])
@@ -89,22 +87,17 @@ class Game:
         page_constant = 15
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
-        sql = "SELECT  * " \
-              "FROM (SELECT  *, ROW_NUMBER() OVER " \
+        sql = "SELECT * FROM (SELECT  *, ROW_NUMBER() OVER " \
               "(ORDER BY score DESC, dname ASC ) AS rn FROM users) q " \
               "WHERE rn BETWEEN %s and %s"
         cur = conn.cursor()
         cur.execute(sql, (low_bound, high_bound))
         rows = cur.fetchall()
         cur.close()
-        response = ""
-        for row in rows:
-            if row[4] < 10:
-                response += "#{}  IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
-            else:
-                response += "#{} IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])
-        await ctx.send("```{}\n\n   Page {}```".format(response, page_count))
-        time.sleep(DELETE_TIME)
+        response = "".join([("#{}  IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])) if row[4] < 10
+                            else ("#{} IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])) for row in rows])
+        await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
+        asyncio.sleep(DELETE_TIME)
         await ctx.message.delete()
 
     @commands.command()

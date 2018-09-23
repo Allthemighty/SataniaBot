@@ -39,9 +39,7 @@ class Reactions:
         cur.execute(sql, (low_bound, high_bound))
         rows = cur.fetchall()
         cur.close()
-        response = ""
-        for row in rows:
-            response += "ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2])
+        response = "".join(["ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2]) for row in rows])
         await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
 
     @commands.command(hidden=True)
