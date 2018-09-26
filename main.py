@@ -32,7 +32,6 @@ async def on_ready():
 async def on_message(message):
     msg = message.content
     did = message.author.id
-    dname = message.author.name
     random_number = int(random.uniform(1, 100))
     message_chance = 25
     gif_chance = 10
@@ -40,7 +39,7 @@ async def on_message(message):
     if not message.author.bot:
         if random_number <= message_chance:
             if not Gu.user_exists(did):
-                Gu.user_create(did, dname)
+                Gu.user_create(did, message.author.name)
             reactions = Ru.get_reacts(msg)
             if reactions:
                 if random_number <= gif_chance:
@@ -51,10 +50,8 @@ async def on_message(message):
                 if reactions:
                     r = random.choice(reactions)
                     await message.channel.send(r[1])
-                    Gu.increment_rcounter(did, 1)
+                    Gu.increment_reaction_counter(did, 1)
                     Gu.increment_score(did, 1)
-                else:
-                    return
         # if bot is mentioned in a message
         elif "@386627978618077184" in msg:
             response = requests.get(url='http://api.adviceslip.com/advice')

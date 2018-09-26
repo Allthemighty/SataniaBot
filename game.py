@@ -47,7 +47,7 @@ class GameUtils:
         cur.execute("UPDATE users SET score = score * %s WHERE did = %s", (score, self))
         cur.close()
 
-    def increment_rcounter(self, score):
+    def increment_reaction_counter(self, score):
         cur = conn.cursor()
         cur.execute("UPDATE users SET reactions_triggered = reactions_triggered + %s WHERE did = %s", (score, self))
         cur.close()
@@ -72,8 +72,7 @@ class Game:
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
         """|Check how high your IQ is"""
-        did = ctx.message.author.id
-        user = GameUtils.user_get(did)
+        user = GameUtils.user_get(ctx.message.author.id)
         embed = discord.Embed(title="Profile for {}".format(user[1]),
                               description="Look at your stats for Satania\'s IQ games", color=0xe41b71)
         embed.add_field(name="IQ", value=user[2], inline=True)
@@ -123,16 +122,14 @@ class Game:
                 flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690459944550410/sataniatail.png'
             if guess in flip_arguments:
                 if bet >= 10:
+                    embed = discord.Embed(title="{} flipped {}".format(ctx.message.author.name, flip_full), color=0xe41b71)
+                    embed.set_image(url=flip_image)
                     if guess is result:
                         won_points = round((bet * 1.5) - bet)
-                        embed = discord.Embed(title="You flipped {}".format(flip_full),
-                                              description="You gain {} IQ points!".format(won_points), color=0xe41b71)
-                        embed.set_image(url=flip_image)
+                        embed.description = "You gain {} IQ points!".format(won_points)
                         GameUtils.increment_score(author, won_points)
                     elif guess is not result:
-                        embed = discord.Embed(title="{} flipped {}".format(ctx.message.author, flip_full),
-                                              description="You lost.", color=0xe41b71)
-                        embed.set_image(url=flip_image)
+                        embed.description = "You lost."
                         GameUtils.reduce_score(author, bet)
                     await ctx.send(embed=embed)
                 else:
