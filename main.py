@@ -1,37 +1,34 @@
 import random
+
 import discord
 import requests
-import Util
 from discord.ext import commands
 
-from Reactions import ReactUtils as Ru
-from Game import GameUtils as Gu
+import Util
+from game import GameUtils as Gu
+from reactions import ReactUtils as Ru
 from dbconn import *
 
-version = '2.43'
-bot = commands.Bot(command_prefix=".", description="A silly bot for people with a low IQ.")
-twitch_url = "https://www.twitch.tv/ninjatuna6"
-status_playing = "Playing with Tuna"
+BOT = commands.Bot(command_prefix=cons.BOT_PREFIX, description=cons.DESCRIPTION)
 
 
-@bot.event
+@BOT.event
 async def on_ready():
-    bot.load_extension('SimpleCommands')
-    bot.load_extension('Reactions')
-    bot.load_extension('Game')
+    BOT.load_extension('simple_commands')
+    BOT.load_extension('reactions')
+    BOT.load_extension('game')
     print("I am the Great Archdemon Satanichia, Queen of all Hell!\n")
-    print("SATANIA Version: {}".format(version))
-    print(
-        "Bot id: {} | Bot name {} | Bot discriminator: #{}".format(bot.user.id, bot.user.name, bot.user.discriminator))
-    print("Bot status: '{}' | Stream url: {}".format(status_playing, twitch_url))
+    print("SATANIA Version: {}".format(cons.VERSION))
+    print("Bot id: {} | Bot name {} | Bot tag: #{}".format(BOT.user.id, BOT.user.name, BOT.user.discriminator))
+    print("Bot status: '{}' | Stream url: {}".format(cons.STATUS_PLAYING, cons.TWITCH_URL))
     if conn.status:
         print("Database connection: True\n")
     else:
         print("Database connection: False, check ASAP.\n")
-    await bot.change_presence(activity=discord.Streaming(name=status_playing, url=twitch_url))
+    await BOT.change_presence(activity=discord.Streaming(name=cons.STATUS_PLAYING, url=cons.TWITCH_URL))
 
 
-@bot.event
+@BOT.event
 async def on_message(message):
     msg = message.content
     did = message.author.id
@@ -64,6 +61,6 @@ async def on_message(message):
             advice = response.json()['slip']['advice']
             await message.channel.send("Somebody asked for my assistance? Fine then, "
                                        "i'll bless you with my glorious knowledge: *{}*".format(advice))
-    await bot.process_commands(message)
+    await BOT.process_commands(message)
 
-bot.run(os.getenv('TOKEN'))
+BOT.run(cons.TOKEN)

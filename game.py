@@ -1,12 +1,13 @@
-import time
-import discord
-import random
 import asyncio
+import random
 
+import discord
 from discord.ext import commands
-from dbconn import *
 
-DELETE_TIME = 15
+from dbconn import *
+import constants as cons
+
+DELETE_TIME = cons.DELETE_TIME
 
 
 class GameUtils:
