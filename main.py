@@ -39,7 +39,7 @@ async def on_message(message):
             reactions = Ru.get_reacts(msg)
             if reactions:
                 if random_number <= gif_chance:
-                    Gu.increment_score(did, 1)
+                    Gu.increment_score(1)
                     util.url_remove(reactions)
                 else:
                     util.url_remove(reactions, False)
@@ -47,7 +47,7 @@ async def on_message(message):
                     r = random.choice(reactions)
                     await message.channel.send(r[1])
                     Gu.increment_reaction_counter(did, 1)
-                    Gu.increment_score(did, 1)
+                    Gu.increment_score(1)
         # if bot is mentioned in a message
         elif const.BOT_MENTION_URL in msg:
             response = requests.get(url='http://api.adviceslip.com/advice')
