@@ -1,18 +1,6 @@
 from discord.ext import commands
 
-from dbconn import *
-
-
-class ReactUtils:
-
-    def get_reacts(self):
-        msg = self.lower()
-        cur = conn.cursor()
-        cur.execute("select * from reactions where %s like '%%' || keyword || '%%'", (msg,))
-        rows = cur.fetchall()
-        cur.close()
-        if rows:
-            return rows
+from db_connection import *
 
 
 class Reactions:
