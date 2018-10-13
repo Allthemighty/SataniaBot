@@ -1,8 +1,12 @@
-import psycopg2
-import constants as cons
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+import constants as const
 
 try:
-    conn = psycopg2.connect(cons.DATABASE_URL, sslmode='require')
-    conn.autocommit = True
+    engine = create_engine(const.DATABASE_URL, connect_args={'sslmode': 'require'})
+    Base = const.BASE
+    Base.metadata.create_all(engine)
+    session = sessionmaker(bind=engine)()
 except:
     print("Cannot connect to db")

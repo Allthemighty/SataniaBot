@@ -4,10 +4,9 @@ import discord
 import requests
 from discord.ext import commands
 
-from util import util
-import constants as const
 from db_connection import *
 from modules.game import GameUtil as Gu
+from util import util
 from util.react_util import ReactUtil as Ru
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
@@ -22,10 +21,6 @@ async def on_ready():
     print("SATANIA Version: {}".format(const.VERSION))
     print("Bot id: {} | Bot name {} | Bot tag: #{}".format(BOT.user.id, BOT.user.name, BOT.user.discriminator))
     print("Bot status: '{}' | Stream url: {}".format(const.STATUS_PLAYING, const.TWITCH_URL))
-    if conn.status:
-        print("Database connection: True\n")
-    else:
-        print("Database connection: False, check ASAP.\n")
     await BOT.change_presence(activity=discord.Streaming(name=const.STATUS_PLAYING, url=const.TWITCH_URL))
 
 
