@@ -1,11 +1,9 @@
 from db_connection import *
-
+from models.reactions import Reaction
 
 def get_reacts(self):
     msg = self.lower()
-    cur = conn.cursor()
-    cur.execute("select * from reactions where %s like '%%' || keyword || '%%'", (msg,))
-    rows = cur.fetchall()
-    cur.close()
+    result = session.query(Reaction).filter(msg.like(Reaction.keyword))
+    rows = result.all()
     if rows:
         return rows
