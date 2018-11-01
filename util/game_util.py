@@ -17,7 +17,7 @@ def user_create(discord_id, discord_name, score=0, reactions_triggered=0):
                 reactions_triggered=reactions_triggered)
     session.add(user)
     session.flush()
-    print("Posted user to DB | {}: {}".format(self, discord_name))
+    print("Posted user to DB | {}: {}".format(discord_id, discord_name))
 
 
 def increment_score(inc_score):
@@ -36,6 +36,6 @@ def multiply_score(multi_score):
 
 
 def increment_reaction_counter(self, inc_score):
-    session.query(User).filter_by(did=self) \
-        .update({User.reactions_triggered: User.reactions_triggered + inc_score})
+    session.query(User).filter_by(did=self).update(
+        {User.reactions_triggered: User.reactions_triggered + inc_score})
     session.commit()
