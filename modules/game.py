@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands
 
 from util.game_util import *
+from db_connection import *
+from models.users import User
 
 
 class Game:
@@ -98,7 +100,7 @@ class Game:
         """|Roll the dice"""
         bet = int(bet)
         author = ctx.message.author.id
-        balance = GameUtil.user_get(author)[2]
+        balance = user_get(author)[2]
         r_number = int(random.uniform(1, 101))
         won_points = 0
         multipliers = [0, 0.8, 1.2, 1.5, 1.7]
