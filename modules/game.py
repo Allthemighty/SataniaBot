@@ -4,9 +4,7 @@ import random
 import discord
 from discord.ext import commands
 
-from db_connection import *
-import constants as const
-from util.game_util import GameUtil
+from util.game_util import *
 
 
 class Game:
@@ -20,7 +18,7 @@ class Game:
         """|Gives an user points"""
         user = ctx.message.mentions[0]
         if not user.bot:
-            GameUtil.increment_score(score)
+            increment_score(score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
             asyncio.sleep(const.DELETE_TIME)
             await ctx.message.delete()
@@ -28,7 +26,7 @@ class Game:
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
         """|Check how high your IQ is"""
-        user = GameUtil.user_get(ctx.message.author.id)
+        user = user_get(ctx.message.author.id)
         embed = discord.Embed(title="Profile for {}".format(user[1]),
                               description="Look at your stats for Satania\'s IQ games", color=0xe41b71)
         embed.add_field(name="IQ", value=user[2], inline=True)
@@ -66,7 +64,7 @@ class Game:
         flip_full = ''
         flip_image = ''
         author = ctx.message.author.id
-        balance = GameUtil.user_get(author)[2]
+        balance = user_get(author)[2]
 
         if balance < bet:
             await ctx.send("You don't have enough points for that.")
@@ -85,10 +83,10 @@ class Game:
                     if guess is result:
                         won_points = round((bet * 1.5) - bet)
                         embed.description = "You gain {} IQ points!".format(won_points)
-                        GameUtil.increment_score(won_points)
+                        increment_score(won_points)
                     elif guess is not result:
                         embed.description = "You lost."
-                        GameUtil.reduce_score(bet)
+                        reduce_score(bet)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send('Please enter a bet of at least 10.')
@@ -123,10 +121,10 @@ class Game:
 
                 if won_points < bet:
                     embed.description = "You lost {} points.".format(won_points)
-                    GameUtil.reduce_score(won_points)
+                    reduce_score(won_points)
                 else:
                     embed.description = "You won {} points!".format(won_points)
-                    GameUtil.increment_score(won_points)
+                    increment_score(won_points)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send('Please enter a bet of at least 10')
