@@ -1,44 +1,41 @@
 from db_connection import *
+from models.users import User
 
 
-class GameUtil:
+def user_exists(self):
+    row = session.query(User).filter_by(did=self).first()
+    return True if row else False
 
-    def user_exists(self):
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE did = %s ", (self,))
-        row = cur.fetchone()
-        cur.close()
-        return True if row else False
 
-    def user_get(self):
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE did = %s ", (self,))
-        row = cur.fetchone()
-        cur.close()
-        return row
+def user_get(self):
+    row = session.query(User).filter_by(did=self).first()
+    return row
 
-    def user_create(self, discord_name, score=0, reactions_triggered=0):
-        cur = conn.cursor()
-        cur.execute("INSERT INTO users VALUES (%s, %s, %s, %s)", (self, discord_name, score, reactions_triggered))
-        print("Posted user to DB | {}: {}".format(self, discord_name))
-        cur.close()
 
-    def increment_score(self, score):
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET score = score + %s WHERE did = %s", (score, self))
-        cur.close()
+def user_create(discord_id, discord_name, score=0, reactions_triggered=0):
+    user = User(did=discord_id, dname=discord_name, score=score,
+                reactions_triggered=reactions_triggered)
+    session.add(user)
+    session.flush()
+    print("Posted user to DB | {}: {}".format(discord_id, discord_name))
 
-    def reduce_score(self, score):
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET score = score - %s WHERE did = %s", (score, self))
-        cur.close()
 
-    def multiply_score(self, score):
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET score = score * %s WHERE did = %s", (score, self))
-        cur.close()
+def increment_score(inc_score):
+    session.query(User).update({User.score: User.score + inc_score})
+    session.commit()
 
-    def increment_reaction_counter(self, score):
-        cur = conn.cursor()
-        cur.execute("UPDATE users SET reactions_triggered = reactions_triggered + %s WHERE did = %s", (score, self))
-        cur.close()
+
+def reduce_score(red_score):
+    session.query(User).update({User.score: User.score - red_score})
+    session.commit()
+
+
+def multiply_score(multi_score):
+    session.query(User).update({User.score: User.score * multi_score})
+    session.commit()
+
+
+def increment_reaction_counter(self, inc_score):
+    session.query(User).filter_by(did=self).update(
+        {User.reactions_triggered: User.reactions_triggered + inc_score})
+    session.commit()

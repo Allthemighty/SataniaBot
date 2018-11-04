@@ -7,5 +7,10 @@ This is a discord bot developed in discord.py . It's mainly developed for a priv
 The bot requires two things to function.
 
 1. A bot token, gotten from a discord bot account.
-2. A PostgreSQL database, with it's database URL. (SETUP SCRIPT WILL BE UP SOON)
+2. A PostgreSQL database, with it's database URL. 
 
+
+# Major dependencies
+
+1. Discord.py
+2. SQLAlchemy

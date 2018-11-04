@@ -1,6 +1,8 @@
 from discord.ext import commands
+from sqlalchemy import func
 
 from db_connection import *
+from models.reactions import Reaction
 
 
 class Reactions:
@@ -11,7 +13,11 @@ class Reactions:
     @commands.is_owner()
     async def dbping(self, ctx):
         """|Ping database."""
-        await ctx.send("Conn = {}".format(conn.status))
+        try:
+            session.query(Reaction).all()
+            await ctx.send('Connection is responsive.')
+        except:
+            await ctx.send('Unknown error appeared when pinging database.')
 
     @commands.command()
     async def listr(self, ctx, page_count=1):
@@ -19,14 +25,13 @@ class Reactions:
         page_constant = 20
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
-        sql = "SELECT  iid, url, keyword" \
-              " FROM (SELECT  iid , url, keyword , " \
-              "ROW_NUMBER() OVER (ORDER BY iid) AS rn" \
-              " FROM reactions) q WHERE rn BETWEEN %s and %s"
-        cur = conn.cursor()
-        cur.execute(sql, (low_bound, high_bound))
-        rows = cur.fetchall()
-        cur.close()
+
+        row_number = func.row_number().over(order_by=Reaction.iid).label('row_number')
+        query = session.query(Reaction.iid, Reaction.url, Reaction.keyword)
+        query = query.add_column(row_number)
+        query = query.from_self().filter(row_number.between(low_bound, high_bound))
+
+        rows = query.all()
         response = "".join(["ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2]) for row in rows])
         await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
 
@@ -34,20 +39,17 @@ class Reactions:
     @commands.is_owner()
     async def addr(self, ctx, url, keyword):
         """|Add a reaction."""
-        sql = "INSERT INTO reactions (url, keyword) VALUES (%s, %s)"
-        cur = conn.cursor()
-        cur.execute(sql, (url, keyword))
-        cur.close()
+        reaction = Reaction(url=url, keyword=keyword)
+        session.add(reaction)
+        session.commit()
         await ctx.send("Reaction added")
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""
-        sql = "DELETE FROM reactions WHERE iid = %s"
-        cur = conn.cursor()
-        cur.execute(sql, (reaction_id,))
-        cur.close()
+        session.query(Reaction).filter_by(iid=reaction_id).delete()
+        session.commit()
         await ctx.send("Reaction deleted")
 
 

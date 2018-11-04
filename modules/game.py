@@ -4,9 +4,10 @@ import random
 import discord
 from discord.ext import commands
 
+from util.game_util import *
 from db_connection import *
-import constants as const
-from util.game_util import GameUtil
+from models.users import User
+from sqlalchemy import func
 
 
 class Game:
@@ -20,7 +21,7 @@ class Game:
         """|Gives an user points"""
         user = ctx.message.mentions[0]
         if not user.bot:
-            GameUtil.increment_score(user.id, score)
+            increment_score(score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
             asyncio.sleep(const.DELETE_TIME)
             await ctx.message.delete()
@@ -28,7 +29,7 @@ class Game:
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
         """|Check how high your IQ is"""
-        user = GameUtil.user_get(ctx.message.author.id)
+        user = user_get(ctx.message.author.id)
         embed = discord.Embed(title="Profile for {}".format(user[1]),
                               description="Look at your stats for Satania\'s IQ games", color=0xe41b71)
         embed.add_field(name="IQ", value=user[2], inline=True)
@@ -40,20 +41,24 @@ class Game:
     @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, page_count=1):
         """|Shows the leaderboard for the IQ games"""
-        page_constant = 15
+        page_constant = 12
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
-        sql = "SELECT * FROM (SELECT  *, ROW_NUMBER() OVER " \
-              "(ORDER BY score DESC, dname ASC ) AS rn FROM users) q " \
-              "WHERE rn BETWEEN %s and %s"
-        cur = conn.cursor()
-        cur.execute(sql, (low_bound, high_bound))
-        rows = cur.fetchall()
-        cur.close()
-        response = "".join(
-            [("#{}  IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])) if row[4] < 10
-             else ("#{} IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])) for row in rows])
-        await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
+
+        row_number = func.row_number().over(order_by=(User.score.desc(), User.dname)).label('row_number')
+        query = session.query(User)
+        query = query.add_column(row_number)
+        query = query.from_self().filter(row_number.between(low_bound, high_bound))
+
+        rows = query.all()
+        embed = discord.Embed(title="Leaderboard")
+        for row in rows:
+            user = row[0]
+            ranking = row[1]
+            embed.add_field(name="#{} {}".format(ranking, user.dname[:20]),
+                            value="IQ: {}".format(user.score), inline=True)
+        embed.set_footer(text="Page {}".format(page_count))
+        await ctx.send(embed=embed)
         asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
 
@@ -66,17 +71,17 @@ class Game:
         flip_full = ''
         flip_image = ''
         author = ctx.message.author.id
-        balance = GameUtil.user_get(author)[2]
+        balance = user_get(author)[2]
 
         if balance < bet:
             await ctx.send("You don't have enough points for that.")
         else:
             if result is 'h':
                 flip_full = 'heads'
-                flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690453594374156/sataniahead.png'
+                flip_image = const.FLIP_IMAGE_HEADS
             elif result is 't':
                 flip_full = 'tails'
-                flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690459944550410/sataniatail.png'
+                flip_image = const.FLIP_IMAGE_TAILS
             if guess in flip_arguments:
                 if bet >= 10:
                     embed = discord.Embed(title="{} flipped {}".format(ctx.message.author.name, flip_full),
@@ -85,10 +90,10 @@ class Game:
                     if guess is result:
                         won_points = round((bet * 1.5) - bet)
                         embed.description = "You gain {} IQ points!".format(won_points)
-                        GameUtil.increment_score(author, won_points)
+                        increment_score(won_points)
                     elif guess is not result:
                         embed.description = "You lost."
-                        GameUtil.reduce_score(author, bet)
+                        reduce_score(bet)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send('Please enter a bet of at least 10.')
@@ -100,7 +105,7 @@ class Game:
         """|Roll the dice"""
         bet = int(bet)
         author = ctx.message.author.id
-        balance = GameUtil.user_get(author)[2]
+        balance = user_get(author)[2]
         r_number = int(random.uniform(1, 101))
         won_points = 0
         multipliers = [0, 0.8, 1.2, 1.5, 1.7]
@@ -123,10 +128,10 @@ class Game:
 
                 if won_points < bet:
                     embed.description = "You lost {} points.".format(won_points)
-                    GameUtil.reduce_score(author, won_points)
+                    reduce_score(won_points)
                 else:
                     embed.description = "You won {} points!".format(won_points)
-                    GameUtil.increment_score(author, won_points)
+                    increment_score(won_points)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send('Please enter a bet of at least 10')
