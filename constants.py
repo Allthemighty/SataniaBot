@@ -7,9 +7,9 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '2.46'
+VERSION = '3.00'
 TWITCH_URL = 'https://www.twitch.tv/ninjatuna6'
-STATUS_PLAYING = 'Give free bitcoin pls'
+STATUS_PLAYING = 'So much power! Muahuahuahua'
 BOT_PREFIX = '.'
 DESCRIPTION = 'A silly bot for people with a low IQ.'
 BOT_MENTION_URL = '@386627978618077184'
