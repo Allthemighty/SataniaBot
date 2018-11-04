@@ -8,7 +8,7 @@ def get_reacts(msg):
     matches = []
 
     for keyword in keywords:
-        match = re.search(r"\b" + keyword[0] + r"\b", msg, re.IGNORECASE | re.M)
+        match = re.search(r"\b{}\b".format(keyword[0]), msg, re.IGNORECASE | re.M)
         if match:
             matches.append(keyword[1])
     if matches:
