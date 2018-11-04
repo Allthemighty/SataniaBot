@@ -7,6 +7,7 @@ from discord.ext import commands
 from util.game_util import *
 from db_connection import *
 from models.users import User
+from sqlalchemy import func
 
 
 class Game:
@@ -43,17 +44,21 @@ class Game:
         page_constant = 15
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
-        sql = "SELECT * FROM (SELECT  *, ROW_NUMBER() OVER " \
-              "(ORDER BY score DESC, dname ASC ) AS rn FROM users) q " \
-              "WHERE rn BETWEEN %s and %s"
-        cur = conn.cursor()
-        cur.execute(sql, (low_bound, high_bound))
-        rows = cur.fetchall()
-        cur.close()
-        response = "".join(
-            [("#{}  IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])) if row[4] < 10
-             else ("#{} IQ: {} | Reactions: {} | {}\n".format(row[4], row[2], row[3], row[1][:30])) for row in rows])
-        await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
+
+        row_number = func.row_number().over(order_by=(User.score.desc(), User.dname)).label('row_number')
+        query = session.query(User)
+        query = query.add_column(row_number)
+        query = query.from_self().filter(row_number.between(low_bound, high_bound))
+
+        rows = query.all()
+        embed = discord.Embed(title="Leaderboard")
+        for row in rows:
+            user = row[0]
+            ranking = row[1]
+            embed.add_field(name="#{} {}".format(ranking, user.dname[:20]),
+                            value="IQ: {}".format(user.score), inline=True)
+        embed.set_footer(text="{}".format(page_count))
+        await ctx.send(embed=embed)
         asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
 
@@ -73,10 +78,10 @@ class Game:
         else:
             if result is 'h':
                 flip_full = 'heads'
-                flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690453594374156/sataniahead.png'
+                flip_image = const.FLIP_IMAGE_HEADS
             elif result is 't':
                 flip_full = 'tails'
-                flip_image = 'https://cdn.discordapp.com/attachments/386624118495248385/484690459944550410/sataniatail.png'
+                flip_image = const.FLIP_IMAGE_TAILS
             if guess in flip_arguments:
                 if bet >= 10:
                     embed = discord.Embed(title="{} flipped {}".format(ctx.message.author.name, flip_full),
