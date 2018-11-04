@@ -23,7 +23,7 @@ class Game:
         if not user.bot:
             increment_score(score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
-            asyncio.sleep(const.DELETE_TIME)
+            await asyncio.sleep(const.DELETE_TIME)
             await ctx.message.delete()
 
     @commands.command(aliases=['p'])
@@ -35,7 +35,7 @@ class Game:
         embed.add_field(name="IQ", value=user[2], inline=True)
         embed.add_field(name="Reactions triggered", value=user[3], inline=True)
         await ctx.send(embed=embed)
-        asyncio.sleep(const.DELETE_TIME)
+        await asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
 
     @commands.command(aliases=['lb'])
@@ -59,7 +59,7 @@ class Game:
                             value="IQ: {}".format(user.score), inline=True)
         embed.set_footer(text="Page {}".format(page_count))
         await ctx.send(embed=embed)
-        asyncio.sleep(const.DELETE_TIME)
+        await asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
 
     @commands.command()
