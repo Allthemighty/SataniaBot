@@ -41,7 +41,7 @@ class Game:
     @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, page_count=1):
         """|Shows the leaderboard for the IQ games"""
-        page_constant = 15
+        page_constant = 12
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
 
@@ -57,7 +57,7 @@ class Game:
             ranking = row[1]
             embed.add_field(name="#{} {}".format(ranking, user.dname[:20]),
                             value="IQ: {}".format(user.score), inline=True)
-        embed.set_footer(text="{}".format(page_count))
+        embed.set_footer(text="Page {}".format(page_count))
         await ctx.send(embed=embed)
         asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
