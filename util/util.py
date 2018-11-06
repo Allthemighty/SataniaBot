@@ -1,4 +1,5 @@
 import validators
+import requests
 
 
 def url_remove(reaction_list, keep_url=True):
@@ -11,3 +12,9 @@ def url_remove(reaction_list, keep_url=True):
             if validators.url(item[1]):
                 reaction_list.pop(idx)
     return reaction_list
+
+
+def get_advice():
+    response = requests.get(url='http://api.adviceslip.com/advice')
+    advice = response.json()['slip']['advice']
+    return advice

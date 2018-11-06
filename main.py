@@ -1,10 +1,9 @@
 import random
 
 import discord
-import requests
 from discord.ext import commands
 
-from util import util
+from util.util import url_remove, get_advice
 from util.game_util import *
 from util.react_util import get_reacts
 
@@ -21,8 +20,8 @@ async def on_ready():
     print("Bot id: {} | Bot name {} | Bot tag: #{}".format
           (BOT.user.id, BOT.user.name, BOT.user.discriminator))
     print("Bot status: '{}' | Stream url: {}".format(const.STATUS_PLAYING, const.TWITCH_URL))
-    await BOT.change_presence(activity=discord.Streaming(
-        name=const.STATUS_PLAYING, url=const.TWITCH_URL))
+    await BOT.change_presence(activity=discord.Streaming(name=const.STATUS_PLAYING,
+                                                         url=const.TWITCH_URL))
 
 
 @BOT.event
@@ -37,22 +36,20 @@ async def on_message(message):
         if random_number <= message_chance:
             if not user_exists(did):
                 user_create(did, message.author.name)
-            reactions = get_reacts(msg)
-            if reactions:
+            reaction_list = get_reacts(msg)
+            if reaction_list:
                 if random_number <= gif_chance:
                     increment_score(1)
-                    util.url_remove(reactions)
+                    url_remove(reaction_list)
                 else:
-                    util.url_remove(reactions, False)
-                r = random.choice(reactions)
-                await message.channel.send(r)
+                    url_remove(reaction_list, False)
+                reaction = random.choice(reaction_list)
+                await message.channel.send(reaction)
                 increment_reaction_counter(did, 1)
                 increment_score(1)
         elif const.BOT_MENTION_URL in msg:
-            response = requests.get(url='http://api.adviceslip.com/advice')
-            advice = response.json()['slip']['advice']
             await message.channel.send("Somebody asked for my assistance? Fine then, "
-                                       "I'll help you: *{}*".format(advice))
+                                       "I'll help you: *{}*".format(get_advice()))
     await BOT.process_commands(message)
 
 
