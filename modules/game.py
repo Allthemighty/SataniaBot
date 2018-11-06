@@ -20,8 +20,9 @@ class Game:
     async def grant(self, ctx, score):
         """|Gives an user points"""
         user = ctx.message.mentions[0]
+        author = user.id
         if not user.bot:
-            increment_score(user, score)
+            increment_score(author, score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
             await asyncio.sleep(const.DELETE_TIME)
             await ctx.message.delete()
