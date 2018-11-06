@@ -1,5 +1,5 @@
 git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py
 git+https://github.com/requests/requests
-psycopg2
+psycopg2-binary
 validators
 SQLAlchemy
