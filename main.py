@@ -27,26 +27,26 @@ async def on_ready():
 @BOT.event
 async def on_message(message):
     msg = message.content
-    did = message.author.id
+    author = message.author.id
     random_number = int(random.uniform(1, 100))
     message_chance = const.MESSAGE_CHANCE
     gif_chance = const.GIF_CHANCE
 
     if not message.author.bot:
         if random_number <= message_chance:
-            if not user_exists(did):
-                user_create(did, message.author.name)
+            if not user_exists(author):
+                user_create(author, message.author.name)
             reaction_list = get_reacts(msg)
             if reaction_list:
                 if random_number <= gif_chance:
-                    increment_score(1)
+                    increment_score(author, 1)
                     url_remove(reaction_list)
                 else:
                     url_remove(reaction_list, False)
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)
-                increment_reaction_counter(did, 1)
-                increment_score(1)
+                increment_reaction_counter(author, 1)
+                increment_score(author, 1)
         elif const.BOT_MENTION_URL in msg:
             await message.channel.send("Somebody asked for my assistance? Fine then, "
                                        "I'll help you: *{}*".format(get_advice()))

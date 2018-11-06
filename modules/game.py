@@ -21,7 +21,7 @@ class Game:
         """|Gives an user points"""
         user = ctx.message.mentions[0]
         if not user.bot:
-            increment_score(score)
+            increment_score(user, score)
             await ctx.send("User {} has been given **{}** points.".format(user, score))
             await asyncio.sleep(const.DELETE_TIME)
             await ctx.message.delete()
@@ -91,10 +91,10 @@ class Game:
                     if guess is result:
                         won_points = round((bet * 1.5) - bet)
                         embed.description = "You gain {} IQ points!".format(won_points)
-                        increment_score(won_points)
+                        increment_score(author, won_points)
                     elif guess is not result:
                         embed.description = "You lost."
-                        reduce_score(bet)
+                        reduce_score(author, bet)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send('Please enter a bet of at least 10.')
@@ -129,10 +129,10 @@ class Game:
 
                 if won_points < bet:
                     embed.description = "You lost {} points.".format(won_points)
-                    reduce_score(won_points)
+                    reduce_score(author, won_points)
                 else:
                     embed.description = "You won {} points!".format(won_points)
-                    increment_score(won_points)
+                    increment_score(author, won_points)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send('Please enter a bet of at least 10')
