@@ -30,10 +30,11 @@ class Game:
     async def profile(self, ctx):
         """|Check how high your IQ is"""
         user = user_get(ctx.message.author.id)
-        embed = discord.Embed(title="Profile for {}".format(user[1]),
-                              description="Look at your stats for Satania\'s IQ games", color=0xe41b71)
-        embed.add_field(name="IQ", value=user[2], inline=True)
-        embed.add_field(name="Reactions triggered", value=user[3], inline=True)
+        embed = discord.Embed(title="Profile for {}".format(user.dname),
+                              description="Your stats for Satania\'s wonderful games",
+                              color=0xe41b71)
+        embed.add_field(name="IQ", value=user.score, inline=True)
+        embed.add_field(name="Reactions triggered", value=user.reactions_triggered, inline=True)
         await ctx.send(embed=embed)
         await asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
@@ -71,7 +72,7 @@ class Game:
         flip_full = ''
         flip_image = ''
         author = ctx.message.author.id
-        balance = user_get(author)[2]
+        balance = user_get(author).score
 
         if balance < bet:
             await ctx.send("You don't have enough points for that.")
@@ -105,7 +106,7 @@ class Game:
         """|Roll the dice"""
         bet = int(bet)
         author = ctx.message.author.id
-        balance = user_get(author)[2]
+        balance = user_get(author).score
         r_number = int(random.uniform(1, 101))
         won_points = 0
         multipliers = [0, 0.8, 1.2, 1.5, 1.7]

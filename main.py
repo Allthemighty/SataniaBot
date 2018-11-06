@@ -44,11 +44,10 @@ async def on_message(message):
                     util.url_remove(reactions)
                 else:
                     util.url_remove(reactions, False)
-                if reactions:
-                    r = random.choice(reactions)
-                    await message.channel.send(r)
-                    increment_reaction_counter(did, 1)
-                    increment_score(1)
+                r = random.choice(reactions)
+                await message.channel.send(r)
+                increment_reaction_counter(did, 1)
+                increment_score(1)
         elif const.BOT_MENTION_URL in msg:
             response = requests.get(url='http://api.adviceslip.com/advice')
             advice = response.json()['slip']['advice']
