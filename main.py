@@ -17,7 +17,7 @@ async def on_ready():
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.game')
     print("I am the Great Archdemon Satanichia, Queen of all Hell!\n")
-    print(f"SATANIA Version: {const.version}")
+    print(f"SATANIA Version: {const.VERSION}")
     print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name} | Bot tag: #{BOT.user.discriminator}")
     print(f"Bot status: '{const.STATUS_PLAYING}' | Stream url: {const.TWITCH_URL}")
     await BOT.change_presence(activity=discord.Streaming(name=const.STATUS_PLAYING,
