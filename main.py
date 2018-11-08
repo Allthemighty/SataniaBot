@@ -12,6 +12,7 @@ BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTIO
 
 @BOT.event
 async def on_ready():
+    """To be executed on startup"""
     BOT.load_extension('modules.simple_commands')
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.game')
@@ -25,6 +26,7 @@ async def on_ready():
 
 @BOT.event
 async def on_message(message):
+    """This is what the bot does whenever a new message is posted"""
     msg = message.content
     author = message.author.id
     random_number = int(random.uniform(1, 100))
