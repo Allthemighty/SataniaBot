@@ -32,8 +32,8 @@ class Reactions:
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 
         rows = query.all()
-        response = "".join(["ID: {} | URL: {} | KEYWORD: {}\n".format(row[0], row[1][:20], row[2]) for row in rows])
-        await ctx.send("```{}\n\n\tPage {}```".format(response, page_count))
+        response = "".join([f"ID: {row[0]} | URL: {row[1][:20]} | KEYWORD: {row[2]}\n" for row in rows])
+        await ctx.send(f"```{response}\n\n\tPage {page_count}```")
 
     @commands.command(hidden=True)
     @commands.is_owner()

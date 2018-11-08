@@ -16,10 +16,9 @@ async def on_ready():
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.game')
     print("I am the Great Archdemon Satanichia, Queen of all Hell!\n")
-    print("SATANIA Version: {}".format(const.VERSION))
-    print("Bot id: {} | Bot name {} | Bot tag: #{}".format
-          (BOT.user.id, BOT.user.name, BOT.user.discriminator))
-    print("Bot status: '{}' | Stream url: {}".format(const.STATUS_PLAYING, const.TWITCH_URL))
+    print(f"SATANIA Version: {const.version}")
+    print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name} | Bot tag: #{BOT.user.discriminator}")
+    print(f"Bot status: '{const.STATUS_PLAYING}' | Stream url: {const.TWITCH_URL}")
     await BOT.change_presence(activity=discord.Streaming(name=const.STATUS_PLAYING,
                                                          url=const.TWITCH_URL))
 
@@ -48,8 +47,8 @@ async def on_message(message):
                 increment_reaction_counter(author, 1)
                 increment_score(author, 1)
         elif const.BOT_MENTION_URL in msg:
-            await message.channel.send("Somebody asked for my assistance? Fine then, "
-                                       "I'll help you: *{}*".format(get_advice()))
+            await message.channel.send(f"Somebody asked for my assistance? Fine then,"
+                                       f" I'll help you: *{get_advice()}*")
     await BOT.process_commands(message)
 
 

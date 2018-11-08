@@ -23,7 +23,7 @@ class Game:
         author = user.id
         if not user.bot:
             increment_score(author, score)
-            await ctx.send("User {} has been given **{}** points.".format(user, score))
+            await ctx.send(f"User {user} has been given **{score}** points.")
             await asyncio.sleep(const.DELETE_TIME)
             await ctx.message.delete()
 
@@ -31,7 +31,7 @@ class Game:
     async def profile(self, ctx):
         """|Check how high your IQ is"""
         user = user_get(ctx.message.author.id)
-        embed = discord.Embed(title="Profile for {}".format(user.dname),
+        embed = discord.Embed(title=f"Profile for {user.dname}",
                               description="Your stats for Satania\'s wonderful games",
                               color=0xe41b71)
         embed.add_field(name="IQ", value=user.score, inline=True)
@@ -57,9 +57,9 @@ class Game:
         for row in rows:
             user = row[0]
             ranking = row[1]
-            embed.add_field(name="#{} {}".format(ranking, user.dname[:20]),
-                            value="IQ: {}".format(user.score), inline=True)
-        embed.set_footer(text="Page {}".format(page_count))
+            embed.add_field(name=f"#{ranking} {user.dname[:20]}",
+                            value=f"IQ: {user.score}", inline=True)
+        embed.set_footer(text=f"Page {page_count}")
         await ctx.send(embed=embed)
         await asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
@@ -86,12 +86,12 @@ class Game:
                 flip_image = const.FLIP_IMAGE_TAILS
             if guess in flip_arguments:
                 if bet >= 10:
-                    embed = discord.Embed(title="{} flipped {}".format(ctx.message.author.name, flip_full),
+                    embed = discord.Embed(title=f"{ctx.message.author.name} flipped {flip_full}",
                                           color=0xe41b71)
                     embed.set_image(url=flip_image)
                     if guess is result:
                         won_points = round((bet * 1.5) - bet)
-                        embed.description = "You gain {} IQ points!".format(won_points)
+                        embed.description = f"You gain {won_points} IQ points!"
                         increment_score(author, won_points)
                     elif guess is not result:
                         embed.description = "You lost."
@@ -116,7 +116,7 @@ class Game:
             await ctx.send("You don't have enough points for that.")
         else:
             if bet >= 10:
-                embed = discord.Embed(title="You rolled a {}".format(r_number), color=0xe41b71)
+                embed = discord.Embed(title=f"You rolled a {r_number}", color=0xe41b71)
                 if r_number <= 20:
                     won_points = round((bet * multipliers[0]))
                 elif r_number <= 50:
@@ -129,10 +129,10 @@ class Game:
                     won_points = round((bet * multipliers[4]) - bet)
 
                 if won_points < bet:
-                    embed.description = "You lost {} points.".format(won_points)
+                    embed.description = f"You lost {won_points} points."
                     reduce_score(author, won_points)
                 else:
-                    embed.description = "You won {} points!".format(won_points)
+                    embed.description = f"You won {won_points} points!"
                     increment_score(author, won_points)
                 await ctx.send(embed=embed)
             else:
