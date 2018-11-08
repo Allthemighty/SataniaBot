@@ -4,6 +4,12 @@ import re
 
 
 def get_reacts(msg):
+    """
+    Takes a message, and compares it against the database if it contains a matching keyword.
+    All matches are reactions that will be returned
+    :param msg: A string
+    :return: A list of reactions,
+    """
     keywords = session.query(Reaction.keyword, Reaction.url).all()
     matches = []
 
