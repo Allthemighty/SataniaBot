@@ -10,16 +10,6 @@ class Reactions:
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def dbping(self, ctx):
-        """|Ping database."""
-        try:
-            session.query(Reaction).all()
-            await ctx.send('Connection is responsive.')
-        except:
-            await ctx.send('Unknown error appeared when pinging database.')
-
     @commands.command()
     async def listr(self, ctx, page_count=1):
         """|List all reactions."""

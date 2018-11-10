@@ -1,5 +1,7 @@
 import validators
 import requests
+from db_connection import *
+from sqlalchemy import text
 
 
 def url_remove(reaction_list, keep_url=True):
@@ -29,3 +31,11 @@ def get_advice():
     response = requests.get(url='http://api.adviceslip.com/advice')
     advice = response.json()['slip']['advice']
     return advice
+
+
+def connected_to_db():
+    try:
+        session.execute(text('SELECT 1'))
+        return True
+    except:
+        return False

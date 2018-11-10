@@ -1,4 +1,5 @@
 from discord.ext import commands
+from util.util import connected_to_db
 
 
 class SimpleCommands:
@@ -8,7 +9,17 @@ class SimpleCommands:
     @commands.command()
     async def ping(self, ctx):
         """|Used to test if bot is responsive and online"""
-        await ctx.send("pong")
+        await ctx.send("pong") \
+
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def dbping(self, ctx):
+        """|Ping database."""
+        if connected_to_db():
+            await ctx.send('Connection is responsive.')
+        else:
+            await ctx.send('Unknown error appeared when pinging database.')
 
     @commands.command()
     async def toc(self, ctx, temperature):
