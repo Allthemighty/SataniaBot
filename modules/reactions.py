@@ -1,5 +1,6 @@
 from discord.ext import commands
 from sqlalchemy import func
+import discord
 
 from db_connection import *
 from models.reactions import Reaction
@@ -22,7 +23,7 @@ class Reactions:
     @commands.command()
     async def listr(self, ctx, page_count=1):
         """|List all reactions."""
-        page_constant = 20
+        page_constant = 15
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
 
@@ -32,8 +33,26 @@ class Reactions:
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 
         rows = query.all()
-        response = "".join([f"ID: {row[0]} | URL: {row[1][:20]} | KEYWORD: {row[2]}\n" for row in rows])
-        await ctx.send(f"```{response}\n\n\tPage {page_count}```")
+        embed = discord.Embed(title="Reaction list")
+        for react in rows:
+            reaction_id = react.iid
+            url = react.url if len(react.url) <= 20 else react.url[:17] + "..."
+            keyword = react.keyword
+            embed.add_field(name=f"#{reaction_id} KW: {keyword}",
+                            value=f"{url}", inline=True)
+        embed.set_footer(text=f"Page {page_count}")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def showr(self, ctx, reaction_id):
+        reaction = session.query(Reaction).filter_by(iid=reaction_id).first()
+        if reaction:
+            embed = discord.Embed(title="Reaction preview",
+                                  description=f"Showing reaction with ID {reaction.iid}")
+            embed.add_field(name=f"{reaction.keyword}", value=f"{reaction.url}", inline=True)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Can't find a reaction with that ID")
 
     @commands.command(hidden=True)
     @commands.is_owner()
