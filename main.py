@@ -1,11 +1,11 @@
 import random
 
-import discord
+from discord import Game
 from discord.ext import commands
 
-from util.util import url_remove, get_advice
 from util.game_util import *
 from util.react_util import get_reacts
+from util.util import url_remove, get_advice, get_status
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 
@@ -20,8 +20,7 @@ async def on_ready():
     print(f"SATANIA Version: {const.VERSION}")
     print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name} | Bot tag: #{BOT.user.discriminator}")
     print(f"Bot status: '{const.STATUS_PLAYING}' | Stream url: {const.TWITCH_URL}")
-    await BOT.change_presence(activity=discord.Streaming(name=const.STATUS_PLAYING,
-                                                         url=const.TWITCH_URL))
+    await BOT.change_presence(activity=Game(get_status()))
 
 
 @BOT.event

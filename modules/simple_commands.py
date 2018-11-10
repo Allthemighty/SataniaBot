@@ -1,5 +1,7 @@
+from discord import Game
 from discord.ext import commands
-from util.util import connected_to_db
+
+from util.util import connected_to_db, change_status
 
 
 class SimpleCommands:
@@ -9,8 +11,7 @@ class SimpleCommands:
     @commands.command()
     async def ping(self, ctx):
         """|Used to test if bot is responsive and online"""
-        await ctx.send("pong") \
-
+        await ctx.send("pong")
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -20,6 +21,12 @@ class SimpleCommands:
             await ctx.send('Connection is responsive.')
         else:
             await ctx.send('Unknown error appeared when pinging database.')
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def status(self, ctx, *, activity):
+        change_status(activity)
+        await self.bot.change_presence(activity=Game(activity))
 
     @commands.command()
     async def toc(self, ctx, temperature):
