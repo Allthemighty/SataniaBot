@@ -27,7 +27,7 @@ class Reactions:
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
 
-        row_number = func.row_number().over(order_by=Reaction.iid).label('row_number')
+        row_number = func.row_number().over(order_by=Reaction.iid)
         query = session.query(Reaction.iid, Reaction.url, Reaction.keyword)
         query = query.add_column(row_number)
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
@@ -45,6 +45,7 @@ class Reactions:
 
     @commands.command()
     async def showr(self, ctx, reaction_id):
+        """|Show a specific reaction"""
         reaction = session.query(Reaction).filter_by(iid=reaction_id).first()
         if reaction:
             embed = discord.Embed(title="Reaction preview",

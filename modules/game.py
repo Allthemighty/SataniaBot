@@ -41,13 +41,16 @@ class Game:
         await ctx.message.delete()
 
     @commands.command(aliases=['lb'])
-    async def leaderboard(self, ctx, page_count=1):
+    async def leaderboard(self, ctx, page_count=1, sort_by_reactions=False):
         """|Shows the leaderboard for the IQ games"""
         page_constant = 12
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
+        order = (User.score.desc(), User.dname)
+        if sort_by_reactions:
+            order = (User.reactions_triggered.desc(), User.dname)
 
-        row_number = func.row_number().over(order_by=(User.score.desc(), User.dname)).label('row_number')
+        row_number = func.row_number().over(order_by=order)
         query = session.query(User)
         query = query.add_column(row_number)
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
@@ -57,8 +60,11 @@ class Game:
         for row in rows:
             user = row[0]
             ranking = row[1]
+            value_field = f"IQ: {user.score}"
+            if sort_by_reactions:
+                value_field = f"Reactions triggered: {user.reactions_triggered}"
             embed.add_field(name=f"#{ranking} {user.dname[:20]}",
-                            value=f"IQ: {user.score}", inline=True)
+                            value=value_field, inline=True)
         embed.set_footer(text=f"Page {page_count}")
         await ctx.send(embed=embed)
         await asyncio.sleep(const.DELETE_TIME)
