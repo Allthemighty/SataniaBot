@@ -27,19 +27,16 @@ async def on_ready():
 @BOT.event
 async def on_message(message):
     """This is what the bot does whenever a new message is posted"""
-    msg = message.content
     author = message.author.id
-    random_number = int(random.uniform(1, 100))
-    message_chance = const.MESSAGE_CHANCE
-    gif_chance = const.GIF_CHANCE
+    random_number = random.randint(1, 100)
 
     if not message.author.bot:
-        if random_number <= message_chance:
+        if random_number <= const.MESSAGE_CHANCE:
             if not user_exists(author):
                 user_create(author, message.author.name)
-            reaction_list = get_reacts(msg)
+            reaction_list = get_reacts(message.content)
             if reaction_list:
-                if random_number <= gif_chance:
+                if random_number <= const.GIF_CHANCE:
                     increment_score(author, 1)
                     url_remove(reaction_list)
                 else:
@@ -48,7 +45,7 @@ async def on_message(message):
                 await message.channel.send(reaction)
                 increment_reaction_counter(author, 1)
                 increment_score(author, 1)
-        elif const.BOT_MENTION_URL in msg:
+        elif const.BOT_MENTION_URL in message.content:
             await message.channel.send(f"Somebody asked for my assistance? Fine then,"
                                        f" I'll help you: *{get_advice()}*")
     await BOT.process_commands(message)
