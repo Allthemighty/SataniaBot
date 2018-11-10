@@ -33,7 +33,7 @@ class Game:
         user = user_get(ctx.message.author.id)
         embed = discord.Embed(title=f"Profile for {user.dname}",
                               description="Your stats for Satania\'s wonderful games",
-                              color=0xe41b71)
+                              color=const.EMBED_COLOR_GAME)
         embed.add_field(name="IQ", value=user.score, inline=True)
         embed.add_field(name="Reactions triggered", value=user.reactions_triggered, inline=True)
         await ctx.send(embed=embed)
@@ -55,9 +55,9 @@ class Game:
         query = query.add_column(row_number)
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 
-        rows = query.all()
-        embed = discord.Embed(title="Leaderboard")
-        for row in rows:
+        users = query.all()
+        embed = discord.Embed(title="Leaderboard", color=const.EMBED_COLOR_GAME)
+        for row in users:
             user = row[0]
             ranking = row[1]
             value_field = f"IQ: {user.score}"
@@ -93,7 +93,7 @@ class Game:
             if guess in flip_arguments:
                 if bet >= 10:
                     embed = discord.Embed(title=f"{ctx.message.author.name} flipped {flip_full}",
-                                          color=0xe41b71)
+                                          color=const.EMBED_COLOR_GAME)
                     embed.set_image(url=flip_image)
                     if guess is result:
                         won_points = round((bet * 1.5) - bet)
@@ -122,7 +122,7 @@ class Game:
             await ctx.send("You don't have enough points for that.")
         else:
             if bet >= 10:
-                embed = discord.Embed(title=f"You rolled a {r_number}", color=0xe41b71)
+                embed = discord.Embed(title=f"You rolled a {r_number}", color=const.EMBED_COLOR_GAME)
                 if r_number <= 20:
                     won_points = round((bet * multipliers[0]))
                 elif r_number <= 50:
