@@ -8,7 +8,7 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '3.01'
+VERSION = '3.1.0'
 TWITCH_URL = 'https://www.twitch.tv/ninjatuna6'
 STATUS_PLAYING = 'So much power! Muahuahuahua'
 BOT_PREFIX = '.'
