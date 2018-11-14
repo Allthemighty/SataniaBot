@@ -1,6 +1,6 @@
 import random
 
-from discord import Game
+from discord import Game, Embed
 from discord.ext import commands
 
 from util.game_util import *
@@ -48,6 +48,17 @@ async def on_message(message):
             await message.channel.send(f"Somebody asked for my assistance? Fine then,"
                                        f" I'll help you: *{get_advice()}*")
     await BOT.process_commands(message)
+
+
+@BOT.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.MissingRequiredArgument) or \
+            isinstance(error, commands.errors.BadArgument):
+        name = ctx.author.display_name
+        embed = Embed(title='Command error')
+        embed.add_field(name=f'{name}, this is not the right way to use this command',
+                        value=f'**Command usage:** {ctx.prefix}{ctx.command.signature}')
+        await ctx.send(embed=embed)
 
 
 BOT.run(const.TOKEN)
