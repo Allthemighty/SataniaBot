@@ -8,11 +8,9 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '3.1.2'
-TWITCH_URL = 'https://www.twitch.tv/ninjatuna6'
-STATUS_PLAYING = 'So much power! Muahuahuahua'
+VERSION = '3.1.3'
 BOT_PREFIX = '.'
-DESCRIPTION = 'A silly bot for people with a low IQ.'
+DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'
 MESSAGE_CHANCE = 25
 GIF_CHANCE = 10

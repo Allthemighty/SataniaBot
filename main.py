@@ -16,10 +16,9 @@ async def on_ready():
     BOT.load_extension('modules.simple_commands')
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.game')
-    print("I am the Great Archdemon Satanichia, Queen of all Hell!\n")
     print(f"SATANIA Version: {const.VERSION}")
-    print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name} | Bot tag: #{BOT.user.discriminator}")
-    print(f"Bot status: '{const.STATUS_PLAYING}' | Stream url: {const.TWITCH_URL}")
+    print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name}#{BOT.user.discriminator}")
+    print(f"Bot status: '{get_status()}'")
     await BOT.change_presence(activity=Game(get_status()))
 
 
