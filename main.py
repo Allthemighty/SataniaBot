@@ -1,4 +1,5 @@
 import random
+import traceback
 
 from discord import Game, Embed
 from discord.ext import commands
@@ -58,6 +59,12 @@ async def on_command_error(ctx, error):
         embed.add_field(name=f'{name}, this is not the right way to use this command',
                         value=f'**Command usage:** {ctx.prefix}{ctx.command.signature}')
         await ctx.send(embed=embed)
+
+
+@BOT.event
+async def on_error(event, *args, ):
+    message = args[0]
+    print(f'Error in message: {message.content}\nEvent: {event}\n{traceback.format_exc()}')
 
 
 BOT.run(const.TOKEN)
