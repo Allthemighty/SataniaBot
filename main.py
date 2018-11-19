@@ -35,15 +35,17 @@ async def on_message(message):
                 user_create(author, message.author.name)
             reaction_list = get_reacts(message.content)
             if reaction_list:
+                # TODO add reaction type column and select on that
                 if random_number <= const.GIF_CHANCE:
                     increment_score(author, 1)
                     url_remove(reaction_list)
                 else:
                     url_remove(reaction_list, False)
-                reaction = random.choice(reaction_list)
-                await message.channel.send(reaction)
-                increment_reaction_counter(author, 1)
-                increment_score(author, 1)
+                if reaction_list:
+                    reaction = random.choice(reaction_list)
+                    await message.channel.send(reaction)
+                    increment_reaction_counter(author, 1)
+                    increment_score(author, 1)
         elif const.BOT_MENTION_URL in message.content:
             await message.channel.send(f"Somebody asked for my assistance? Fine then,"
                                        f" I'll help you: *{get_advice()}*")
