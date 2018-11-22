@@ -1,6 +1,7 @@
 from discord.ext import commands
 from sqlalchemy import func
 import discord
+import validators
 
 from db_connection import *
 from models.reactions import Reaction
@@ -24,13 +25,11 @@ class Reactions:
 
         reactions = query.all()
         embed = discord.Embed(title="Reaction list", color=const.EMBED_COLOR_REACTIONS)
-        for react in reactions:
-            reaction_id = react.iid
-            url = react.url if len(react.url) <= 20 else react.url[:17] + "..."
-            keyword = react.keyword
-            embed.add_field(name=f"#{reaction_id} KW: {keyword}",
-                            value=f"{url}", inline=True)
-        embed.set_footer(text=f"Page {page_count}")
+        for reaction in reactions:
+            url = reaction.url if len(reaction.url) <= 20 else reaction.url[:17] + "..."
+            keyword = reaction.keyword
+            embed.add_field(name=f'#{reaction.iid} Keyword: {keyword}', value=f'{url}', inline=True)
+        embed.set_footer(text=f'Page {page_count}')
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -38,9 +37,9 @@ class Reactions:
         """|Show a specific reaction"""
         reaction = session.query(Reaction).filter_by(iid=reaction_id).first()
         if reaction:
-            embed = discord.Embed(title="Reaction preview", color=const.EMBED_COLOR_REACTIONS,
-                                  description=f"Showing reaction with ID {reaction.iid}")
-            embed.add_field(name=f"{reaction.keyword}", value=f"{reaction.url}", inline=True)
+            embed = discord.Embed(title='Reaction preview', color=const.EMBED_COLOR_REACTIONS,
+                                  description=f'Showing reaction with ID {reaction.iid}')
+            embed.add_field(name=f"{reaction.keyword}", value=f'{reaction.url}', inline=True)
             await ctx.send(embed=embed)
         else:
             await ctx.send("Can't find a reaction with that ID")
@@ -49,10 +48,11 @@ class Reactions:
     @commands.is_owner()
     async def addr(self, ctx, url, keyword):
         """|Add a reaction."""
-        reaction = Reaction(url=url, keyword=keyword)
+        react_type = 'gif' if validators.url(url) else 'message'
+        reaction = Reaction(url=url, keyword=keyword, react_type=react_type)
         session.add(reaction)
         session.commit()
-        await ctx.send("Reaction added")
+        await ctx.send(f'Reaction to "{keyword}" added')
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -60,7 +60,7 @@ class Reactions:
         """|Delete a reaction."""
         session.query(Reaction).filter_by(iid=reaction_id).delete()
         session.commit()
-        await ctx.send("Reaction deleted")
+        await ctx.send(f'Reaction #{reaction_id} deleted')
 
 
 def setup(bot):
