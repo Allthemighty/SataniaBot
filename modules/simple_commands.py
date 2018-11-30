@@ -1,7 +1,8 @@
-from discord import Game
+from discord import Game, Embed
 from discord.ext import commands
+import constants as const
 
-from util.util import connected_to_db, change_status
+from util.util import connected_to_db, change_status, get_discord_colors
 
 
 class SimpleCommands:
@@ -50,6 +51,30 @@ class SimpleCommands:
         except ValueError:
             await ctx.send(f'"{temperature}" is not a valid digit.')
 
+
+    @commands.command()
+    async def embed(self, ctx, title, description, color=None, url=None):
+        """|Send a simple embed. For colors use the 'colors' command"""
+        discord_colors = get_discord_colors()
+        if not title or not description:
+            raise commands.errors.MissingRequiredArgument
+        embed = Embed(title=title, description=description)
+        if color in discord_colors:
+            embed.colour = discord_colors[color]
+        else:
+            raise commands.errors.BadArgument
+        if url:
+            embed.url = url
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
+
+    @commands.command()
+    async def colors(self, ctx):
+        """|List all colors that you can use in the embed command"""
+        embed = Embed(title='Colors', description='Colors you can use in the embed command')
+        for color in get_discord_colors():
+            embed.add_field(name=color, value=const.INVISIBLE_CHAR)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(SimpleCommands(bot))

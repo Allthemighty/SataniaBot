@@ -8,7 +8,7 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '3.1.7'
+VERSION = '3.2.7'
 BOT_PREFIX = '.'
 DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'
@@ -23,6 +23,7 @@ FLIP_IMAGE_TAILS = 'https://cdn.discordapp.com/attachments/386624118495248385/48
 
 # Reactions
 EMBED_COLOR_REACTIONS = Color.from_rgb(255, 255, 0)
+INVISIBLE_CHAR = ' ̷̧̟̭̺͕̜̦̔̏̊̍ͧ͊́̚̕͞'
 
 # SQLAlchemy
 BASE = declarative_base()
