@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from util.game_util import *
 from util.react_util import get_reacts
-from util.util import url_remove, get_advice, get_status
+from util.util import get_advice, get_status
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 
