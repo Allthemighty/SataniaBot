@@ -4,7 +4,7 @@ import traceback
 from discord import Game, Embed
 from discord.ext import commands
 
-from util.game_util import *
+from util.user_util import *
 from util.react_util import get_reacts
 from util.util import get_advice, get_status
 
@@ -16,7 +16,7 @@ async def on_ready():
     """To be executed on startup"""
     BOT.load_extension('modules.simple_commands')
     BOT.load_extension('modules.reactions')
-    BOT.load_extension('modules.game')
+    BOT.load_extension('modules.user')
     print(f"SATANIA Version: {const.VERSION}")
     print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name}#{BOT.user.discriminator}")
     print(f"Bot status: '{get_status()}'")
@@ -36,14 +36,12 @@ async def on_message(message):
                 user_create(author, message.author.name)
             if random_number <= const.GIF_CHANCE:
                 reaction_list = get_reacts(content, 'gif')
-                increment_score(author, 1)
             else:
                 reaction_list = get_reacts(content, 'message')
             if reaction_list:
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)
                 increment_reaction_counter(author, 1)
-                increment_score(author, 1)
         elif const.BOT_MENTION_URL in content:
             await message.channel.send(f"Somebody asked for my assistance? Fine then,"
                                        f" I'll help you: *{get_advice()}*")
