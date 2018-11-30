@@ -1,5 +1,4 @@
 import requests
-import validators
 from sqlalchemy import text
 
 from db_connection import *
