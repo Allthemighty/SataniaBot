@@ -30,6 +30,9 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Environments
+.env
+env/
+env.bak/
 .venv
 venv/
 venv.bak/
