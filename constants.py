@@ -10,7 +10,7 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '4.1.2'
+VERSION = '4.1.4'
 BOT_PREFIX = '.'
 DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'

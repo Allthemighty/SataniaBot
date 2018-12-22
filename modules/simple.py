@@ -5,7 +5,7 @@ import constants as const
 from util.util import connected_to_db, change_status, get_discord_colors
 
 
-class SimpleCommands:
+class Simple:
     def __init__(self, bot):
         self.bot = bot
 
@@ -51,7 +51,6 @@ class SimpleCommands:
         except ValueError:
             await ctx.send(f'"{temperature}" is not a valid digit.')
 
-
     @commands.command()
     async def embed(self, ctx, title, description, color=None, url=None):
         """|Send a simple embed. For colors use the 'colors' command"""
@@ -76,5 +75,6 @@ class SimpleCommands:
             embed.add_field(name=color, value=const.INVISIBLE_CHAR)
         await ctx.send(embed=embed)
 
+
 def setup(bot):
-    bot.add_cog(SimpleCommands(bot))
+    bot.add_cog(Simple(bot))

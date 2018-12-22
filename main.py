@@ -16,7 +16,7 @@ logger = const.logger
 @BOT.event
 async def on_ready():
     """To be executed on startup"""
-    BOT.load_extension('modules.simple_commands')
+    BOT.load_extension('modules.simple')
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.user')
 
