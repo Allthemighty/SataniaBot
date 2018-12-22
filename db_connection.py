@@ -11,4 +11,4 @@ try:
     Base.metadata.create_all(engine)
     session = sessionmaker(bind=engine)()
 except:
-    logger.warning("Cannot connect to db")
+    logger.error("Cannot connect to db")
