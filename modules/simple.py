@@ -1,8 +1,8 @@
 from discord import Game, Embed
 from discord.ext import commands
-import constants as const
 
-from util.util import connected_to_db, change_status, get_discord_colors
+import constants as const
+from util.util import connected_to_db, change_status, get_discord_colors, get_advice
 
 
 class Simple:
@@ -28,6 +28,11 @@ class Simple:
     async def status(self, ctx, *, activity):
         change_status(activity)
         await self.bot.change_presence(activity=Game(activity))
+
+    @commands.command()
+    async def advice(self, ctx):
+        await ctx.send(
+            f"You asked for my assistance? Fine then, I'll help you: *{get_advice()}*")
 
     @commands.command()
     async def toc(self, ctx, temperature):

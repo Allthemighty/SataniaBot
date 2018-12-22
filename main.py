@@ -7,7 +7,7 @@ from discord.ext import commands
 import constants as const
 from util.react_util import get_reacts
 from util.user_util import user_exists, user_create, increment_reaction_counter
-from util.util import get_advice, get_status
+from util.util import get_status
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 logger = const.logger
@@ -34,7 +34,10 @@ async def on_message(message):
     content = message.content
 
     if not message.author.bot:
-        if random_number <= const.MESSAGE_CHANCE:
+        if const.BOT_MENTION_URL in content:
+            await message.channel.send(
+                f"To use Satania, type **{const.BOT_PREFIX}help** for a list of commands")
+        elif random_number <= const.MESSAGE_CHANCE:
             if not user_exists(author):
                 user_create(author, message.author.name)
             if random_number <= const.GIF_CHANCE:
@@ -45,9 +48,6 @@ async def on_message(message):
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)
                 increment_reaction_counter(author, 1)
-        elif const.BOT_MENTION_URL in content:
-            await message.channel.send(f"Somebody asked for my assistance? Fine then,"
-                                       f" I'll help you: *{get_advice()}*")
     await BOT.process_commands(message)
 
 
