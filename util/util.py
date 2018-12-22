@@ -4,22 +4,6 @@ from sqlalchemy import text
 
 from db_connection import *
 from models.misc import Misc
-import logging
-import sys
-
-
-def get_logger():
-    """
-    Setup logger object
-    :return: logger
-    """
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-    formatter = logging.Formatter('[%(asctime)s][%(levelname)s] - %(message)s')
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
 
 
 def get_advice():

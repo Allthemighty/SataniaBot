@@ -1,8 +1,7 @@
 from db_connection import *
 from models.users import Users
-from util.util import get_logger
 
-logger = get_logger()
+logger = const.logger
 
 
 def user_exists(discord_id):

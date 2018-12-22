@@ -1,17 +1,16 @@
-import logging
 import random
 import traceback
-import sys
 
 from discord import Game, Embed
 from discord.ext import commands
 
+import constants as const
 from util.react_util import get_reacts
-from util.user_util import *
-from util.util import get_advice, get_status, get_logger
+from util.user_util import user_exists, user_create, increment_reaction_counter
+from util.util import get_advice, get_status
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
-logger = get_logger()
+logger = const.logger
 
 
 @BOT.event
