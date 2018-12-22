@@ -12,7 +12,6 @@ class User:
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
         """|Check how high your IQ is"""

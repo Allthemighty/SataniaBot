@@ -1,5 +1,8 @@
 from db_connection import *
 from models.users import Users
+from util.util import get_logger
+
+logger = get_logger()
 
 
 def user_exists(discord_id):
@@ -27,14 +30,13 @@ def user_create(discord_id, discord_name, reactions_triggered=0):
     Create an user
     :param discord_id: Discord id
     :param discord_name: Discord name (not nickname)
-    :param score: Users score
     :param reactions_triggered: Amount of reactions that user triggered
     """
     user = Users(did=discord_id, dname=discord_name,
                  reactions_triggered=reactions_triggered)
     session.add(user)
     session.commit()
-    print("Posted user to DB | {}: {}".format(discord_id, discord_name))
+    logger.info("Posted user to DB | {}: {}".format(discord_id, discord_name))
 
 
 def increment_reaction_counter(discord_id, inc_score):

@@ -1,14 +1,17 @@
+import logging
 import random
 import traceback
+import sys
 
 from discord import Game, Embed
 from discord.ext import commands
 
-from util.user_util import *
 from util.react_util import get_reacts
-from util.util import get_advice, get_status
+from util.user_util import *
+from util.util import get_advice, get_status, get_logger
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
+logger = get_logger()
 
 
 @BOT.event
@@ -17,9 +20,10 @@ async def on_ready():
     BOT.load_extension('modules.simple_commands')
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.user')
-    print(f"SATANIA Version: {const.VERSION}")
-    print(f"Bot id: {BOT.user.id} | Bot name {BOT.user.name}#{BOT.user.discriminator}")
-    print(f"Bot status: '{get_status()}'")
+
+    logger.info(f"SATANIA Version: {const.VERSION}")
+    logger.info(f"Bot id: {BOT.user.id} | Bot name: {BOT.user.name}#{BOT.user.discriminator}")
+    logger.info(f"Bot status: '{get_status()}'")
     await BOT.change_presence(activity=Game(get_status()))
 
 
@@ -60,9 +64,9 @@ async def on_command_error(ctx, error):
 
 
 @BOT.event
-async def on_error(event, *args, ):
+async def on_error(event, *args):
     message = args[0]
-    print(f'Error in message: {message.content}\nEvent: {event}\n{traceback.format_exc()}')
+    logger.error(f'Error in message: {message.content}\nEvent: {event}\n{traceback.format_exc()}')
 
 
 BOT.run(const.TOKEN)
