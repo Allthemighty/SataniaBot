@@ -1,3 +1,6 @@
+from asyncio import TimeoutError
+
+import validators
 from discord import Game, Embed
 from discord.ext import commands
 
@@ -57,20 +60,46 @@ class Simple:
             await ctx.send(f'"{temperature}" is not a valid digit.')
 
     @commands.command()
-    async def embed(self, ctx, title, description, color=None, url=None):
-        """|Send a simple embed. For colors use the 'colors' command"""
-        discord_colors = get_discord_colors()
-        if not title or not description:
-            raise commands.errors.MissingRequiredArgument
-        embed = Embed(title=title, description=description)
-        if color in discord_colors:
-            embed.colour = discord_colors[color]
-        else:
-            raise commands.errors.BadArgument
-        if url:
-            embed.url = url
-        await ctx.send(embed=embed)
-        await ctx.message.delete()
+    async def embed(self, ctx, color=None):
+        """|Create an embed. For colors use the 'colors' command"""
+        try:
+            discord_colors = get_discord_colors()
+            await ctx.send('Please type the title of the embed.')
+            title = await self.bot.wait_for('message', timeout=30.0,
+                                            check=lambda message: (message.author == ctx.author
+                                                                   and message.channel == ctx.channel))
+
+            await ctx.send('Please type the description of the embed (useful if you have this '
+                           'written in advance for large pieces of text).')
+            description = await self.bot.wait_for('message', timeout=120.0,
+                                                  check=lambda message: (
+                                                          message.author == ctx.author
+                                                          and message.channel == ctx.channel))
+            embed = Embed(title=title.content, description=description.content)
+
+            if color:
+                if color in discord_colors:
+                    embed.colour = discord_colors[color]
+
+            await ctx.send('Do you want to enter an url for the embed? Type "Y" or "N" to answer')
+            url_prompt = await self.bot.wait_for('message', timeout=30.0,
+                                                 check=lambda message: (message.author == ctx.author
+                                                                        and message.channel == ctx.channel))
+            url_prompt = url_prompt.content
+            if url_prompt.lower() == 'y':
+                await ctx.send('Please enter the url')
+                url = await self.bot.wait_for('message', timeout=30.0,
+                                              check=lambda message: (message.author == ctx.author
+                                                                     and message.channel == ctx.channel))
+                url = url.content
+                if validators.url(url):
+                    embed.url = url
+                else:
+                    await ctx.send('This is not a valid url.')
+            await ctx.send(embed=embed)
+            await ctx.message.delete()
+        except TimeoutError:
+            await ctx.send('No response received, aborting command.')
 
     @commands.command()
     async def colors(self, ctx):

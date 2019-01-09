@@ -17,7 +17,7 @@ class User:
         """|Check how high your IQ is"""
         user = user_get(ctx.message.author.id)
         embed = discord.Embed(title=f"Profile for {user.dname}",
-                              description="Your stats for Satania\'s wonderful shenanigans",
+                              description="Your stats for Satania's wonderful shenanigans",
                               color=const.EMBED_COLOR)
         embed.add_field(name="Reactions triggered", value=user.reactions_triggered, inline=True)
         await ctx.send(embed=embed)
