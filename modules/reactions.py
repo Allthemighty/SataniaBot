@@ -2,6 +2,7 @@ from discord.ext import commands
 from sqlalchemy import func
 import discord
 import validators
+from asyncio import TimeoutError
 
 from db_connection import *
 from models.reactions import Reaction
@@ -46,13 +47,24 @@ class Reactions:
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def addr(self, ctx, url, keyword):
+    async def addr(self, ctx):
         """|Add a reaction."""
-        react_type = 'gif' if validators.url(url) else 'message'
-        reaction = Reaction(url=url, keyword=keyword, react_type=react_type)
-        session.add(reaction)
-        session.commit()
-        await ctx.send(f'Reaction to "{keyword}" added')
+        try:
+            await ctx.send('Please type the message/url you want to add')
+            url = await self.bot.wait_for('message', timeout=30.0,
+                                          check=lambda message: (message.author == ctx.author
+                                                                 and message.channel == ctx.channel))
+            react_type = 'gif' if validators.url(url.content) else 'message'
+            await ctx.send('Please type the keyword on which this reaction should trigger')
+            keyword = await self.bot.wait_for('message', timeout=30.0,
+                                              check=lambda message: (message.author == ctx.author
+                                                                     and message.channel == ctx.channel))
+            reaction = Reaction(url=url.content, keyword=keyword.content, react_type=react_type)
+            session.add(reaction)
+            session.commit()
+            await ctx.send(f'Reaction to "{keyword.content}" added')
+        except TimeoutError:
+            await ctx.send('No response received, aborting command.')
 
     @commands.command(hidden=True)
     @commands.is_owner()
