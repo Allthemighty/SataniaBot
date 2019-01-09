@@ -80,6 +80,20 @@ class Simple:
             embed.add_field(name=color, value=const.INVISIBLE_CHAR)
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def info(self, ctx):
+        embed = Embed(color=const.EMBED_COLOR)
+        embed.add_field(name='About',
+                        value="Satania is a robust bot which adds custom reactions to your server. "
+                              "Unlike other bots however, Satania doesn't instantly respond "
+                              "whenever a keyword is mentioned, instead, this is all based on "
+                              "chance. This makes sure you don't get tired of a reaction easily, "
+                              "and makes it more fun by turning it into a game.")
+        embed.add_field(name='Author', value='This bot is developed by All#9999')
+        embed.add_field(name='Repository', value='https://bit.ly/2RjOYJk')
+        embed.set_footer(text=f'Satania is running on version {const.VERSION}')
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Simple(bot))
