@@ -24,7 +24,7 @@ class Reactions:
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 
         reactions = query.all()
-        embed = discord.Embed(title="Reaction list", color=const.EMBED_COLOR_REACTIONS)
+        embed = discord.Embed(title="Reaction list", color=const.EMBED_COLOR)
         for reaction in reactions:
             url = reaction.url if len(reaction.url) <= 20 else reaction.url[:17] + "..."
             keyword = reaction.keyword
@@ -37,7 +37,7 @@ class Reactions:
         """|Show a specific reaction"""
         reaction = session.query(Reaction).filter_by(iid=reaction_id).first()
         if reaction:
-            embed = discord.Embed(title='Reaction preview', color=const.EMBED_COLOR_REACTIONS,
+            embed = discord.Embed(title='Reaction preview', color=const.EMBED_COLOR,
                                   description=f'Showing reaction with ID {reaction.iid}')
             embed.add_field(name=f"{reaction.keyword}", value=f'{reaction.url}', inline=True)
             await ctx.send(embed=embed)

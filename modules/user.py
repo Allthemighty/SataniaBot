@@ -18,7 +18,7 @@ class User:
         user = user_get(ctx.message.author.id)
         embed = discord.Embed(title=f"Profile for {user.dname}",
                               description="Your stats for Satania\'s wonderful shenanigans",
-                              color=const.EMBED_COLOR_GAME)
+                              color=const.EMBED_COLOR)
         embed.add_field(name="Reactions triggered", value=user.reactions_triggered, inline=True)
         await ctx.send(embed=embed)
         await asyncio.sleep(const.DELETE_TIME)
@@ -26,7 +26,7 @@ class User:
 
     @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, page_count=1):
-        """|Shows the leaderboard for the IQ games"""
+        """|Shows the leaderboard for Satania statistics"""
         page_constant = 12
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
@@ -38,7 +38,7 @@ class User:
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 
         users = query.all()
-        embed = discord.Embed(title="Leaderboard", color=const.EMBED_COLOR_GAME)
+        embed = discord.Embed(title="Leaderboard", color=const.EMBED_COLOR)
         for row in users:
             user = row[0]
             ranking = row[1]

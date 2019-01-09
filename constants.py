@@ -16,13 +16,12 @@ DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'
 MESSAGE_CHANCE = 25
 GIF_CHANCE = 10
+EMBED_COLOR = Color.from_rgb(253, 4, 91)
 
 # GAME
-EMBED_COLOR_GAME = Color.from_rgb(253, 4, 91)
 DELETE_TIME = 15
 
 # Reactions
-EMBED_COLOR_REACTIONS = Color.from_rgb(255, 255, 0)
 INVISIBLE_CHAR = ' ̷̧̟̭̺͕̜̦̔̏̊̍ͧ͊́̚̕͞'
 
 # SQLAlchemy

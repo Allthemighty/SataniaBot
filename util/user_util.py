@@ -35,7 +35,7 @@ def user_create(discord_id, discord_name, reactions_triggered=0):
                  reactions_triggered=reactions_triggered)
     session.add(user)
     session.commit()
-    logger.info("Posted user to DB | {}: {}".format(discord_id, discord_name))
+    logger.info(f"Posted user to DB | {discord_id}: {discord_name}")
 
 
 def increment_reaction_counter(discord_id, inc_score):
