@@ -122,7 +122,9 @@ class Simple:
     @commands.command()
     async def colors(self, ctx):
         """|List all colors that you can use in the embed command"""
-        embed = Embed(title='Colors', description='Colors you can use in the embed command')
+        embed = Embed(title='Colors', description='Preset colors you can use in the embed command, '
+                                                  'if these do not suit you, you can also enter a '
+                                                  'hex color code.')
         for color in get_discord_colors():
             embed.add_field(name=color, value=const.INVISIBLE_CHAR)
         await ctx.send(embed=embed)
