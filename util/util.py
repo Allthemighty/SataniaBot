@@ -1,6 +1,7 @@
 import requests
 from discord.embeds import Colour
 from sqlalchemy import text
+import re
 
 from db_connection import *
 from models.misc import Misc
@@ -62,3 +63,18 @@ def get_discord_colors():
                       'dark_grey': Colour.dark_grey(), 'darker_grey': Colour.darker_grey(),
                       'blurple': Colour.blurple(), 'greyple': Colour.greyple()}
     return discord_colors
+
+def is_hex_color(hex_color):
+    """
+    Asserts if a string is a hex color or not
+    :param hex_color: string to match
+    :return: boolean
+    """
+    match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', hex_color)
+    return match
+
+def hex_to_rgb(hex_color):
+    """Converts a hex color code to RGB, to a Discord Color"""
+    hex_code = hex_color.lstrip('#')
+    rgb_color = tuple(int(hex_code[i:i + 2], 16) for i in (0, 2, 4))
+    return Colour.from_rgb(rgb_color[0], rgb_color[1], rgb_color[2])

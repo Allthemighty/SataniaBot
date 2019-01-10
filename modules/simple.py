@@ -5,7 +5,8 @@ from discord import Game, Embed
 from discord.ext import commands
 
 import constants as const
-from util.util import connected_to_db, change_status, get_discord_colors, get_advice
+from util.util import (connected_to_db, change_status, get_discord_colors, get_advice,
+                       is_hex_color, hex_to_rgb)
 
 
 class Simple:
@@ -76,7 +77,7 @@ class Simple:
             description_message = await ctx.send(
                 f'{author}, please type the description of the embed (useful if you have this '
                 f'written in advance for large pieces of text).')
-            description = await self.bot.wait_for('message', timeout=120.0,
+            description = await self.bot.wait_for('message', timeout=60.0,
                                                   check=lambda message: (
                                                           message.author == ctx.author
                                                           and message.channel == ctx.channel))
@@ -84,8 +85,11 @@ class Simple:
             await description_message.delete()
             embed = Embed(title=title.content, description=description.content)
 
-            if color and color in discord_colors:
-                embed.colour = discord_colors[color]
+            if color:
+                if color in discord_colors:
+                    embed.colour = discord_colors[color]
+                elif is_hex_color(color):
+                    embed.colour = hex_to_rgb(color)
 
             url_prompt_message = await ctx.send(f'{author}, do you want to enter an url for the '
                                                 f'embed? Type "Y" or "N" to answer')
