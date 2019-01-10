@@ -63,39 +63,53 @@ class Simple:
     async def embed(self, ctx, color=None):
         """|Create an embed. For colors use the 'colors' command"""
         try:
+            author = ctx.author.name
             discord_colors = get_discord_colors()
-            await ctx.send('Please type the title of the embed.')
+            title_message = await ctx.send(f'{author}, please type the title of the embed.')
             title = await self.bot.wait_for('message', timeout=30.0,
-                                            check=lambda message: (message.author == ctx.author
-                                                                   and message.channel == ctx.channel))
+                                            check=lambda message: (
+                                                    message.author == ctx.author
+                                                    and message.channel == ctx.channel))
+            await title.delete()
+            await title_message.delete()
 
-            await ctx.send('Please type the description of the embed (useful if you have this '
-                           'written in advance for large pieces of text).')
+            description_message = await ctx.send(
+                f'{author}, please type the description of the embed (useful if you have this '
+                f'written in advance for large pieces of text).')
             description = await self.bot.wait_for('message', timeout=120.0,
                                                   check=lambda message: (
                                                           message.author == ctx.author
                                                           and message.channel == ctx.channel))
+            await description.delete()
+            await description_message.delete()
             embed = Embed(title=title.content, description=description.content)
 
-            if color:
-                if color in discord_colors:
-                    embed.colour = discord_colors[color]
+            if color and color in discord_colors:
+                embed.colour = discord_colors[color]
 
-            await ctx.send('Do you want to enter an url for the embed? Type "Y" or "N" to answer')
+            url_prompt_message = await ctx.send(f'{author}, do you want to enter an url for the '
+                                                f'embed? Type "Y" or "N" to answer')
             url_prompt = await self.bot.wait_for('message', timeout=30.0,
-                                                 check=lambda message: (message.author == ctx.author
-                                                                        and message.channel == ctx.channel))
+                                                 check=lambda message: (
+                                                         message.author == ctx.author
+                                                         and message.channel == ctx.channel))
+            await url_prompt.delete()
+            await url_prompt_message.delete()
             url_prompt = url_prompt.content
             if url_prompt.lower() == 'y':
-                await ctx.send('Please enter the url')
+                url_message = await ctx.send(f'{author}, please enter the url')
                 url = await self.bot.wait_for('message', timeout=30.0,
-                                              check=lambda message: (message.author == ctx.author
-                                                                     and message.channel == ctx.channel))
+                                              check=lambda message: (
+                                                      message.author == ctx.author
+                                                      and message.channel == ctx.channel))
+                await url.delete()
+                await url_message.delete()
                 url = url.content
                 if validators.url(url):
                     embed.url = url
                 else:
-                    await ctx.send('This is not a valid url.')
+                    await ctx.send(f'"{url}" is not a valid url.')
+                    return
             await ctx.send(embed=embed)
             await ctx.message.delete()
         except TimeoutError:
