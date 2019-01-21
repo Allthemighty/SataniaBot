@@ -18,9 +18,9 @@ class Simple:
         """|Used to test if bot is responsive and online"""
         await ctx.send("pong")
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, name='dbping')
     @commands.is_owner()
-    async def dbping(self, ctx):
+    async def db_ping(self, ctx):
         """|Ping database."""
         if connected_to_db():
             await ctx.send('Connection is responsive.')
@@ -35,8 +35,8 @@ class Simple:
 
     @commands.command()
     async def advice(self, ctx):
-        await ctx.send(
-            f"You asked for my assistance? Fine then, I'll help you: *{get_advice()}*")
+        """|Satania will give you her well thought out advice"""
+        await ctx.send(f"You asked for my assistance? Fine then, I'll help you: *{get_advice()}*")
 
     @commands.command()
     async def toc(self, ctx, temperature):
@@ -131,6 +131,7 @@ class Simple:
 
     @commands.command()
     async def info(self, ctx):
+        """|Display some info about the bot"""
         embed = Embed(color=const.EMBED_COLOR)
         embed.add_field(name='About',
                         value="Satania is a robust bot which adds custom reactions to your server. "

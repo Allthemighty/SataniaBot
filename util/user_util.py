@@ -44,6 +44,7 @@ def increment_reaction_counter(discord_id, inc_score):
     :param discord_id: Discord id
     :param inc_score: Amount to increment by
     """
+    # TODO simplify this?
     session.query(User).filter_by(did=discord_id).update(
         {User.reactions_triggered: User.reactions_triggered + inc_score})
     session.commit()

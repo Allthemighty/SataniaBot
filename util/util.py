@@ -1,10 +1,12 @@
+import re
+
 import requests
 from discord.embeds import Colour
 from sqlalchemy import text
-import re
 
 from db_connection import *
 from models.misc import Misc
+from models.server import Server
 
 
 def get_advice():
@@ -64,6 +66,7 @@ def get_discord_colors():
                       'blurple': Colour.blurple(), 'greyple': Colour.greyple()}
     return discord_colors
 
+
 def is_hex_color(hex_color):
     """
     Asserts if a string is a hex color or not
@@ -73,8 +76,28 @@ def is_hex_color(hex_color):
     match = re.search(r'^#(?:[0-9a-fA-F]{3}){1,2}$', hex_color)
     return match
 
+
 def hex_to_rgb(hex_color):
     """Converts a hex color code to RGB, to a Discord Color"""
     hex_code = hex_color.lstrip('#')
     rgb_color = tuple(int(hex_code[i:i + 2], 16) for i in (0, 2, 4))
     return Colour.from_rgb(rgb_color[0], rgb_color[1], rgb_color[2])
+
+
+def get_servers():
+    """
+    Retrieve all the discord servers in the database
+    :return: List of servers
+    """
+    return session.query(Server).all()
+
+
+def add_server(server_id, server_name):
+    """
+    Adds a server to the database
+    :param server_id: The server id
+    :param server_name: The server name
+    """
+    new_server = Server(server_id=server_id, server_name=server_name)
+    session.add(new_server)
+    session.commit()

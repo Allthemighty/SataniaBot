@@ -7,7 +7,7 @@ from discord.ext import commands
 import constants as const
 from util.react_util import get_reacts
 from util.user_util import user_exists, user_create, increment_reaction_counter
-from util.util import get_status
+from util.util import get_status, get_servers, add_server
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 logger = const.logger
@@ -16,13 +16,26 @@ logger = const.logger
 @BOT.event
 async def on_ready():
     """To be executed on startup"""
+
+    # Initialize servers #
+    connected_servers = BOT.guilds
+    db_servers = get_servers()
+    for server in connected_servers:
+        if server.id not in [server.server_id for server in db_servers]:
+            add_server(server.id, server.name)
+    logger.info(f'Servers initialized')
+
+    # Load extensions #
     BOT.load_extension('modules.simple')
     BOT.load_extension('modules.reactions')
     BOT.load_extension('modules.user')
+    logger.info(f'Extensions loaded')
 
-    logger.info(f"SATANIA Version: {const.VERSION}")
-    logger.info(f"Bot id: {BOT.user.id} | Bot name: {BOT.user.name}#{BOT.user.discriminator}")
-    logger.info(f"Bot status: '{get_status()}'")
+    # Bot information #
+    logger.info(f'Bot id: {BOT.user.id} | '
+                f'Bot name: {BOT.user.name}#{BOT.user.discriminator} | '
+                f'Bot version: {const.VERSION} | '
+                f'Bot status: {get_status()}')
     await BOT.change_presence(activity=Game(get_status()))
 
 
