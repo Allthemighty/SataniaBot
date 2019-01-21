@@ -3,8 +3,8 @@ from sqlalchemy import Column, BigInteger, Integer, String
 import constants as const
 
 
-class Users(const.BASE):
-    __tablename__ = 'users'
+class User(const.BASE):
+    __tablename__ = 'user'
 
     did = Column(BigInteger, primary_key=True)
     dname = Column(String)

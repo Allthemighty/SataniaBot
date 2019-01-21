@@ -19,8 +19,8 @@ class Reactions:
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
 
-        row_number = func.row_number().over(order_by=Reaction.iid)
-        query = session.query(Reaction.iid, Reaction.url, Reaction.keyword)
+        row_number = func.row_number().over(order_by=Reaction.reaction_id)
+        query = session.query(Reaction.reaction_id, Reaction.url, Reaction.keyword)
         query = query.add_column(row_number)
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 

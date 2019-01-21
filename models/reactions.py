@@ -1,17 +1,18 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, BigInteger, Integer, String, ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM
 
 import constants as const
 
 
 class Reaction(const.BASE):
-    __tablename__ = 'reactions'
+    __tablename__ = 'reaction'
 
-    iid = Column(Integer, primary_key=True)
+    reaction_id = Column(Integer, primary_key=True)
     url = Column(String)
     keyword = Column(String)
     react_type = Column(ENUM('gif', 'message'), name='react_type', nullable=False)
+    from_server = Column(BigInteger, ForeignKey('servers.server_id'))
 
     def __str__(self):
-        return f"ID: {self.iid}| URL {self.url}| " \
-               f"Keyword: {self.keyword}, Reaction Type: {self.react_type}"
+        return (f"ID: {self.reaction_id}| URL {self.url}| "
+                f"Keyword: {self.keyword}, Type: {self.react_type}")

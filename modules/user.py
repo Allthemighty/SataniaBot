@@ -30,10 +30,10 @@ class User:
         page_constant = 12
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
-        order = (Users.reactions_triggered.desc(), Users.dname)
+        order = (User.reactions_triggered.desc(), User.dname)
 
         row_number = func.row_number().over(order_by=order)
-        query = session.query(Users)
+        query = session.query(User)
         query = query.add_column(row_number)
         query = query.from_self().filter(row_number.between(low_bound, high_bound))
 
