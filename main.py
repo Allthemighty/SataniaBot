@@ -26,9 +26,9 @@ async def on_ready():
     logger.info(f'Servers initialized')
 
     # Load extensions #
-    BOT.load_extension('modules.simple')
-    BOT.load_extension('modules.reaction')
-    BOT.load_extension('modules.user')
+    BOT.load_extension('modules.simple.simple_commands')
+    BOT.load_extension('modules.reaction.reaction_commands')
+    BOT.load_extension('modules.user.user_commands')
     logger.info(f'Extensions loaded')
 
     # Bot information #
