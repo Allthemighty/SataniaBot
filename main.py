@@ -45,6 +45,7 @@ async def on_message(message):
     author = message.author.id
     random_number = random.randint(1, 100)
     content = message.content
+    server_id = message.guild.id
 
     if not message.author.bot:
         if const.BOT_MENTION_URL in content:
@@ -54,9 +55,9 @@ async def on_message(message):
             if not user_exists(author):
                 user_create(author, message.author.name)
             if random_number <= const.GIF_CHANCE:
-                reaction_list = get_reacts(content, 'gif')
+                reaction_list = get_reacts(content, server_id, 'gif')
             else:
-                reaction_list = get_reacts(content, 'message')
+                reaction_list = get_reacts(content, server_id, 'message')
             if reaction_list:
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)

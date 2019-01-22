@@ -36,7 +36,9 @@ class Reactions:
     @commands.command()
     async def showr(self, ctx, reaction_id):
         """|Show a specific reaction"""
-        reaction = session.query(Reaction).filter_by(iid=reaction_id).first()
+        server_id = ctx.message.guild.id
+        reaction = session.query(Reaction).filter_by(reaction_id=reaction_id,
+                                                     from_server=server_id).first()
         if reaction:
             embed = discord.Embed(title='Reaction preview', color=const.EMBED_COLOR,
                                   description=f'Showing reaction with ID {reaction.iid}')
@@ -50,6 +52,7 @@ class Reactions:
     async def addr(self, ctx):
         """|Add a reaction."""
         try:
+            server_id = ctx.message.guild.id
             await ctx.send('Please type the message/url you want to add')
             url = await self.bot.wait_for('message', timeout=30.0,
                                           check=lambda message: (message.author == ctx.author
@@ -59,7 +62,10 @@ class Reactions:
             keyword = await self.bot.wait_for('message', timeout=30.0,
                                               check=lambda message: (message.author == ctx.author
                                                                      and message.channel == ctx.channel))
-            reaction = Reaction(url=url.content, keyword=keyword.content, react_type=react_type)
+            reaction = Reaction(url=url.content,
+                                keyword=keyword.content,
+                                react_type=react_type,
+                                from_server=server_id)
             session.add(reaction)
             session.commit()
             await ctx.send(f'Reaction to "{keyword.content}" added')
@@ -70,7 +76,7 @@ class Reactions:
     @commands.is_owner()
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""
-        session.query(Reaction).filter_by(iid=reaction_id).delete()
+        session.query(Reaction).filter_by(reaction_id=reaction_id).delete()
         session.commit()
         await ctx.send(f'Reaction #{reaction_id} deleted')
 
