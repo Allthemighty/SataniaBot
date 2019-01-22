@@ -5,7 +5,7 @@ import validators
 from asyncio import TimeoutError
 
 from db_connection import *
-from models.reaction import Reaction
+from modules.reaction.reaction_model import Reaction
 
 
 class Reactions:

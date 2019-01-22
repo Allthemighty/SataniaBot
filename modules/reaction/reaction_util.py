@@ -1,5 +1,5 @@
 from db_connection import *
-from models.reaction import Reaction
+from modules.reaction.reaction_model import Reaction
 import re
 
 

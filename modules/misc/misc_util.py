@@ -5,8 +5,8 @@ from discord.embeds import Colour
 from sqlalchemy import text
 
 from db_connection import *
-from models.misc import Misc
-from models.server import Server
+from modules.misc.misc_model import Misc
+from modules.reaction.server_model import Server
 
 
 def get_advice():

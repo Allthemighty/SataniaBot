@@ -5,8 +5,8 @@ from discord import Game, Embed
 from discord.ext import commands
 
 import constants as const
-from util.util import (connected_to_db, change_status, get_discord_colors, get_advice,
-                       is_hex_color, hex_to_rgb)
+from modules.misc.misc_util import (connected_to_db, change_status, get_discord_colors, get_advice,
+                                    is_hex_color, hex_to_rgb)
 
 
 class Simple:

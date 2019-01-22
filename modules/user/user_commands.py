@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from sqlalchemy import func
 
-from util.user_util import *
+from modules.user.user_util import *
 
 
 class User:

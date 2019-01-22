@@ -5,9 +5,9 @@ from discord import Game, Embed
 from discord.ext import commands
 
 import constants as const
-from util.react_util import get_reacts
-from util.user_util import user_exists, user_create, increment_reaction_counter
-from util.util import get_status, get_servers, add_server
+from modules.reaction.reaction_util import get_reacts
+from modules.user.user_util import user_exists, user_create, increment_reaction_counter
+from modules.misc.misc_util import get_status, get_servers, add_server
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 logger = const.logger

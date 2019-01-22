@@ -1,5 +1,5 @@
 from db_connection import *
-from models.user import User
+from modules.user.user_model import User
 
 logger = const.logger
 
