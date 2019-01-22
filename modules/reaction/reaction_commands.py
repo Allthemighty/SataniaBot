@@ -50,7 +50,7 @@ class Reactions:
             await ctx.send("Can't find a reaction with that ID")
 
     @commands.command(hidden=True)
-    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
     async def addr(self, ctx):
         """|Add a reaction."""
         try:
@@ -73,7 +73,7 @@ class Reactions:
             await ctx.send('No response received, aborting command.')
 
     @commands.command(hidden=True)
-    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""
         delete_reaction(reaction_id)
