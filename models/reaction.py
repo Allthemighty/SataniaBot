@@ -13,6 +13,9 @@ class Reaction(const.BASE):
     react_type = Column(ENUM('gif', 'message'), name='react_type', nullable=False)
     from_server = Column(BigInteger, ForeignKey('server.server_id'), nullable=False)
 
-    def __str__(self):
-        return (f"ID: {self.reaction_id}| URL {self.url}| "
-                f"Keyword: {self.keyword}, Type: {self.react_type}")
+    def __repr__(self):
+        return (f"ID: [{self.reaction_id}], "
+                f"URL [{self.url}], "
+                f"Keyword: [{self.keyword}], "
+                f"Type: [{self.react_type}], "
+                f"From_server: [{self.from_server}]")

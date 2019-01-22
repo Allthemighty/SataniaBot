@@ -27,7 +27,7 @@ async def on_ready():
 
     # Load extensions #
     BOT.load_extension('modules.simple')
-    BOT.load_extension('modules.reactions')
+    BOT.load_extension('modules.reaction')
     BOT.load_extension('modules.user')
     logger.info(f'Extensions loaded')
 
