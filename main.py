@@ -5,7 +5,7 @@ from discord import Game, Embed
 from discord.ext import commands
 
 import constants as const
-from modules.reaction.reaction_util import get_reacts
+from modules.reaction.reaction_util import get_reactions
 from modules.user.user_util import user_exists, user_create, increment_reaction_counter
 from modules.misc.misc_util import get_status, get_servers, add_server
 
@@ -55,9 +55,9 @@ async def on_message(message):
             if not user_exists(author):
                 user_create(author, message.author.name)
             if random_number <= const.GIF_CHANCE:
-                reaction_list = get_reacts(content, server_id, 'gif')
+                reaction_list = get_reactions(content, server_id, 'gif')
             else:
-                reaction_list = get_reacts(content, server_id, 'message')
+                reaction_list = get_reactions(content, server_id, 'message')
             if reaction_list:
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)

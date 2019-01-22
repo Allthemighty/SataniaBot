@@ -1,11 +1,12 @@
-from discord.ext import commands
-from sqlalchemy import func
+from asyncio import TimeoutError
+
 import discord
 import validators
-from asyncio import TimeoutError
+from discord.ext import commands
 
 from db_connection import *
 from modules.reaction.reaction_model import Reaction
+from modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
 
 
 class Reactions:
@@ -20,16 +21,7 @@ class Reactions:
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count
 
-        row_number = func.row_number().over(order_by=Reaction.reaction_id)
-        query = session.query(Reaction.reaction_id,
-                              Reaction.url,
-                              Reaction.keyword,
-                              Reaction.from_server)
-        query = query.filter_by(from_server=server_id)
-        query = query.add_column(row_number)
-        query = query.from_self().filter(row_number.between(low_bound, high_bound))
-
-        reactions = query.all()
+        reactions = get_reactions_paginated(low_bound, high_bound, server_id)
         if reactions:
             embed = discord.Embed(title="Reaction list", color=const.EMBED_COLOR)
             for reaction in reactions:
@@ -72,12 +64,10 @@ class Reactions:
             keyword = await self.bot.wait_for('message', timeout=30.0,
                                               check=lambda message: (message.author == ctx.author
                                                                      and message.channel == ctx.channel))
-            reaction = Reaction(url=url.content,
-                                keyword=keyword.content,
-                                react_type=react_type,
-                                from_server=server_id)
-            session.add(reaction)
-            session.commit()
+            add_reaction(url=url.content,
+                         keyword=keyword.content,
+                         react_type=react_type,
+                         server_id=server_id)
             await ctx.send(f'Reaction to "{keyword.content}" added')
         except TimeoutError:
             await ctx.send('No response received, aborting command.')
@@ -86,8 +76,7 @@ class Reactions:
     @commands.is_owner()
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""
-        session.query(Reaction).filter_by(reaction_id=reaction_id).delete()
-        session.commit()
+        delete_reaction(reaction_id)
         await ctx.send(f'Reaction #{reaction_id} deleted')
 
 
