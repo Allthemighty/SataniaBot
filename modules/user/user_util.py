@@ -1,5 +1,6 @@
 from db_connection import *
 from modules.user.user_model import User
+from sqlalchemy import func
 
 logger = const.logger
 
@@ -48,3 +49,18 @@ def increment_reaction_counter(discord_id, inc_score):
     session.query(User).filter_by(did=discord_id).update(
         {User.reactions_triggered: User.reactions_triggered + inc_score})
     session.commit()
+
+
+def get_users_paginated(low_bound, high_bound):
+    """
+    Get a list of users, between 2 values.
+    :param low_bound: On which users to start matching
+    :param high_bound: On which users to stop matching
+    :return: list of users
+    """
+    order = (User.reactions_triggered.desc(), User.dname)
+    row_number = func.row_number().over(order_by=order)
+    query = session.query(User)
+    query = query.add_column(row_number)
+    query = query.from_self().filter(row_number.between(low_bound, high_bound))
+    return query.all()
