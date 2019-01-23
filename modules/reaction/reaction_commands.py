@@ -5,9 +5,9 @@ import validators
 from discord.ext import commands
 
 from db_connection import *
+from modules.misc.misc_util import simple_check
 from modules.reaction.reaction_model import Reaction
 from modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
-from modules.server.server_util import set_message_chance, set_gif_chance
 
 
 class Reactions:
@@ -55,16 +55,16 @@ class Reactions:
     async def addr(self, ctx):
         """|Add a reaction."""
         try:
+            new_check = simple_check(ctx.author, ctx.channel)
             server_id = ctx.message.guild.id
+
             await ctx.send('Please type the message/url you want to add')
-            url = await self.bot.wait_for('message', timeout=30.0,
-                                          check=lambda message: (message.author == ctx.author
-                                                                 and message.channel == ctx.channel))
+            url = await self.bot.wait_for('message', timeout=30.0, check=new_check)
             react_type = 'gif' if validators.url(url.content) else 'message'
+
             await ctx.send('Please type the keyword on which this reaction should trigger')
-            keyword = await self.bot.wait_for('message', timeout=30.0,
-                                              check=lambda message: (message.author == ctx.author
-                                                                     and message.channel == ctx.channel))
+            keyword = await self.bot.wait_for('message', timeout=30.0, check=new_check)
+
             add_reaction(url=url.content,
                          keyword=keyword.content,
                          react_type=react_type,

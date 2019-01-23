@@ -4,9 +4,7 @@ import validators
 from discord import Game, Embed
 from discord.ext import commands
 
-import constants as const
-from modules.misc.misc_util import (connected_to_db, change_status, get_discord_colors, get_advice,
-                                    is_hex_color, hex_to_rgb)
+from modules.misc.misc_util import *
 
 
 class Simple:
@@ -64,23 +62,18 @@ class Simple:
     async def embed(self, ctx, color=None):
         """|Create an embed. For colors use the 'colors' command"""
         try:
-            author = ctx.author.name
+            author = ctx.author
+            new_check = simple_check(author, ctx.channel)
             discord_colors = get_discord_colors()
-            title_message = await ctx.send(f'{author}, please type the title of the embed.')
-            title = await self.bot.wait_for('message', timeout=30.0,
-                                            check=lambda message: (
-                                                    message.author == ctx.author
-                                                    and message.channel == ctx.channel))
+            title_message = await ctx.send(f'{author.name}, please type the title of the embed.')
+            title = await self.bot.wait_for('message', timeout=30.0, check=new_check)
             await title.delete()
             await title_message.delete()
 
             description_message = await ctx.send(
-                f'{author}, please type the description of the embed (useful if you have this '
+                f'{author.name}, please type the description of the embed (useful if you have this '
                 f'written in advance for large pieces of text).')
-            description = await self.bot.wait_for('message', timeout=60.0,
-                                                  check=lambda message: (
-                                                          message.author == ctx.author
-                                                          and message.channel == ctx.channel))
+            description = await self.bot.wait_for('message', timeout=60.0, check=new_check)
             await description.delete()
             await description_message.delete()
             embed = Embed(title=title.content, description=description.content)
@@ -93,19 +86,14 @@ class Simple:
 
             url_prompt_message = await ctx.send(f'{author}, do you want to enter an url for the '
                                                 f'embed? Type "Y" or "N" to answer')
-            url_prompt = await self.bot.wait_for('message', timeout=30.0,
-                                                 check=lambda message: (
-                                                         message.author == ctx.author
-                                                         and message.channel == ctx.channel))
+            url_prompt = await self.bot.wait_for('message', timeout=30.0, check=new_check)
             await url_prompt.delete()
             await url_prompt_message.delete()
             url_prompt = url_prompt.content
+
             if url_prompt.lower() == 'y':
                 url_message = await ctx.send(f'{author}, please enter the url')
-                url = await self.bot.wait_for('message', timeout=30.0,
-                                              check=lambda message: (
-                                                      message.author == ctx.author
-                                                      and message.channel == ctx.channel))
+                url = await self.bot.wait_for('message', timeout=30.0, check=new_check)
                 await url.delete()
                 await url_message.delete()
                 url = url.content

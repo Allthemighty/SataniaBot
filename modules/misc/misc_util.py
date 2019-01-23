@@ -101,3 +101,18 @@ def add_server(server_id, server_name):
     new_server = Server(server_id=server_id, server_name=server_name)
     session.add(new_server)
     session.commit()
+
+
+def simple_check(author, channel):
+    """
+    A predicate used in the wait_for() function, to ensure the user input can only come
+    from the user who activated the command, and in the same channel.
+    :param author:
+    :param channel:
+    :return: check function
+    """
+
+    def check(message):
+        return message.author == author and message.channel == channel
+
+    return check
