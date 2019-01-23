@@ -8,6 +8,7 @@ from db_connection import *
 from modules.misc.misc_util import simple_check
 from modules.reaction.reaction_model import Reaction
 from modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
+from modules.server.server_util import set_message_chance, set_gif_chance
 
 
 class Reactions:
@@ -79,6 +80,41 @@ class Reactions:
         """|Delete a reaction."""
         delete_reaction(reaction_id)
         await ctx.send(f'Reaction #{reaction_id} deleted')
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def setchance(self, ctx):
+        """|Change the chance for a reaction to appear"""
+        try:
+            server_id = ctx.message.guild.id
+            new_check = simple_check(ctx.author, ctx.channel)
+            await ctx.send('Do you want to edit the chance percentage for messages or images?\n'
+                           'Type **0**: to change the message percentage\n'
+                           'Type **1**: to change the image percentage')
+            type_prompt = await self.bot.wait_for('message', timeout=30, check=new_check)
+            type_prompt = type_prompt.content
+            if type_prompt not in ['0', '1']:
+                await ctx.send(f'{type_prompt} is not a valid type.')
+
+            else:
+                await ctx.send('Please type the new chance percentage.')
+                percentage = await self.bot.wait_for('message', timeout=30, check=new_check)
+                percentage = percentage.content
+                try:
+                    percentage = int(percentage)
+                except ValueError:
+                    await ctx.send(f'{percentage} is not a valid percentage.')
+                if not 0 <= percentage <= 100:
+                    await ctx.send(f'{percentage} is not a valid percentage.')
+
+                if type_prompt == '0':
+                    set_message_chance(server_id, percentage)
+                    await ctx.send(f'New message chance successfully set to {percentage}%')
+                elif type_prompt == '1':
+                    set_gif_chance(server_id, percentage)
+                    await ctx.send(f'New image chance successfully set to {percentage}%')
+        except TimeoutError:
+            await ctx.send('No response received, aborting command.')
 
 
 def setup(bot):
