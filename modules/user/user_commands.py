@@ -14,7 +14,7 @@ class User:
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
         """|Check how high your IQ is"""
-        user = user_get(ctx.message.author.id)
+        user = get_user(ctx.message.author.id)
         embed = discord.Embed(title=f"Profile for {user.dname}",
                               description="Your stats for Satania's wonderful shenanigans",
                               color=const.EMBED_COLOR)
@@ -33,8 +33,7 @@ class User:
 
         embed = discord.Embed(title="Leaderboard", color=const.EMBED_COLOR)
         for row in users:
-            user = row[0]
-            ranking = row[1]
+            user, ranking = row[0], row[1]
             value_field = f"Reactions triggered: {user.reactions_triggered}"
             embed.add_field(name=f"#{ranking} {user.dname[:20]}", value=value_field, inline=True)
         embed.set_footer(text=f"Page {page_count}")

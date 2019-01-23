@@ -7,6 +7,7 @@ from discord.ext import commands
 from db_connection import *
 from modules.reaction.reaction_model import Reaction
 from modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
+from modules.server.server_util import set_message_chance, set_gif_chance
 
 
 class Reactions:
@@ -49,7 +50,7 @@ class Reactions:
         else:
             await ctx.send("Can't find a reaction with that ID")
 
-    @commands.command(hidden=True)
+    @commands.command()
     @commands.has_permissions(administrator=True)
     async def addr(self, ctx):
         """|Add a reaction."""
@@ -72,7 +73,7 @@ class Reactions:
         except TimeoutError:
             await ctx.send('No response received, aborting command.')
 
-    @commands.command(hidden=True)
+    @commands.command()
     @commands.has_permissions(administrator=True)
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""

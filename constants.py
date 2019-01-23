@@ -10,12 +10,10 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '5.0.5'
+VERSION = '5.1.0'
 BOT_PREFIX = '.'
 DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'
-MESSAGE_CHANCE = 25
-GIF_CHANCE = 10
 EMBED_COLOR = Color.from_rgb(253, 4, 91)
 
 # GAME

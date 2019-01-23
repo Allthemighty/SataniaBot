@@ -6,7 +6,7 @@ from sqlalchemy import text
 
 from db_connection import *
 from modules.misc.misc_model import Misc
-from modules.reaction.server_model import Server
+from modules.server.server_model import Server
 
 
 def get_advice():

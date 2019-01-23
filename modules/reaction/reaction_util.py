@@ -15,8 +15,8 @@ def get_reactions(message, server_id, react_type='message'):
     :param message: A string
     :return: A list of reactions,
     """
-    query = session.query(Reaction.keyword, Reaction.url).filter_by(react_type=react_type,
-                                                                    from_server=server_id)
+    query = session.query(Reaction.keyword, Reaction.url)
+    query = query.filter_by(react_type=react_type, from_server=server_id)
     reactions = query.all()
     matches = []
 

@@ -15,25 +15,25 @@ def user_exists(discord_id):
     return True if row else False
 
 
-def user_get(discord_id):
+def get_user(discord_id):
     """
     Retrieve an user by id
     :param discord_id: Discord id
     :return: User
     """
-    user = session.query(User).filter_by(did=discord_id).first()
-    return user
+    query = session.query(User)
+    query = query.filter_by(did=discord_id)
+    return query.first()
 
 
-def user_create(discord_id, discord_name, reactions_triggered=0):
+def create_user(discord_id, discord_name, reactions_triggered=0):
     """
     Create an user
     :param discord_id: Discord id
     :param discord_name: Discord name (not nickname)
     :param reactions_triggered: Amount of reactions that user triggered
     """
-    user = User(did=discord_id, dname=discord_name,
-                reactions_triggered=reactions_triggered)
+    user = User(did=discord_id, dname=discord_name, reactions_triggered=reactions_triggered)
     session.add(user)
     session.commit()
     logger.info(f"Posted user to DB | {discord_id}: {discord_name}")
@@ -45,9 +45,8 @@ def increment_reaction_counter(discord_id, inc_score):
     :param discord_id: Discord id
     :param inc_score: Amount to increment by
     """
-    # TODO simplify this?
-    session.query(User).filter_by(did=discord_id).update(
-        {User.reactions_triggered: User.reactions_triggered + inc_score})
+    user = get_user(discord_id)
+    user.reactions_triggered += inc_score
     session.commit()
 
 

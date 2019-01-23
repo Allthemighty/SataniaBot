@@ -6,8 +6,9 @@ from discord.ext import commands
 
 import constants as const
 from modules.reaction.reaction_util import get_reactions
-from modules.user.user_util import user_exists, user_create, increment_reaction_counter
+from modules.user.user_util import user_exists, create_user, increment_reaction_counter
 from modules.misc.misc_util import get_status, get_servers, add_server
+from modules.server.server_util import get_server
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 logger = const.logger
@@ -48,13 +49,14 @@ async def on_message(message):
     server_id = message.guild.id
 
     if not message.author.bot:
+        server = get_server(server_id)
         if const.BOT_MENTION_URL in content:
             await message.channel.send(
                 f"To use Satania, type **{const.BOT_PREFIX}help** for a list of commands")
-        elif random_number <= const.MESSAGE_CHANCE:
+        elif random_number <= server.message_chance:
             if not user_exists(author):
-                user_create(author, message.author.name)
-            if random_number <= const.GIF_CHANCE:
+                create_user(author, message.author.name)
+            if random_number <= server.gif_chance:
                 reaction_list = get_reactions(content, server_id, 'gif')
             else:
                 reaction_list = get_reactions(content, server_id, 'message')
