@@ -6,7 +6,6 @@ from sqlalchemy import text
 
 from db_connection import *
 from modules.misc.misc_model import Misc
-from modules.server.server_model import Server
 
 
 def get_advice():
@@ -82,25 +81,6 @@ def hex_to_rgb(hex_color):
     hex_code = hex_color.lstrip('#')
     rgb_color = tuple(int(hex_code[i:i + 2], 16) for i in (0, 2, 4))
     return Colour.from_rgb(rgb_color[0], rgb_color[1], rgb_color[2])
-
-
-def get_servers():
-    """
-    Retrieve all the discord servers in the database
-    :return: List of servers
-    """
-    return session.query(Server).all()
-
-
-def add_server(server_id, server_name):
-    """
-    Adds a server to the database
-    :param server_id: The server id
-    :param server_name: The server name
-    """
-    new_server = Server(server_id=server_id, server_name=server_name)
-    session.add(new_server)
-    session.commit()
 
 
 def simple_check(author, channel):

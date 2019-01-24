@@ -1,4 +1,4 @@
-from db_connection import *
+from db_connection import session
 from modules.server.server_model import Server
 
 
@@ -11,6 +11,49 @@ def get_server(server_id):
     query = session.query(Server)
     query = query.filter_by(server_id=server_id)
     return query.first()
+
+
+def get_servers():
+    """
+    Retrieve all the discord servers in the database
+    :return: List of servers
+    """
+    return session.query(Server).all()
+
+
+def add_server(server_id, server_name):
+    """
+    Adds a server to the database
+    :param server_id: Server id
+    :param server_name: The server name
+    """
+    new_server = Server(server_id=server_id, server_name=server_name)
+    session.add(new_server)
+    session.commit()
+
+
+def remove_server(server_id):
+    """
+    Deletes a server from the database
+    :param server_id: Server id
+    """
+    session.query(Server).filter_by(server_id=server_id).delete()
+    session.commit()
+
+
+def refresh_servers(connected_servers, database_servers=get_servers()):
+    """
+    Adds all connected servers to the database that are not in there, and removes all servers in
+    the database that are not connected.
+    :param connected_servers: Servers the bot is connected to
+    :param database_servers: Servers in the database
+    """
+    for server in connected_servers:
+        if server.id not in [server.server_id for server in database_servers]:
+            add_server(server.id, server.name)
+    for server in database_servers:
+        if server.server_id not in [server.id for server in connected_servers]:
+            pass
 
 
 def set_message_chance(server_id, new_chance):

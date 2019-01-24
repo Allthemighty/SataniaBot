@@ -5,10 +5,10 @@ from discord import Game, Embed
 from discord.ext import commands
 
 import constants as const
+from modules.misc.misc_util import get_status
 from modules.reaction.reaction_util import get_reactions
+from modules.server.server_util import get_server, refresh_servers, add_server, remove_server
 from modules.user.user_util import user_exists, create_user, increment_reaction_counter
-from modules.misc.misc_util import get_status, get_servers, add_server
-from modules.server.server_util import get_server
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 logger = const.logger
@@ -20,10 +20,7 @@ async def on_ready():
 
     # Initialize servers #
     connected_servers = BOT.guilds
-    db_servers = get_servers()
-    for server in connected_servers:
-        if server.id not in [server.server_id for server in db_servers]:
-            add_server(server.id, server.name)
+    refresh_servers(connected_servers)
     logger.info(f'Servers initialized')
 
     # Load extensions #
@@ -38,6 +35,16 @@ async def on_ready():
                 f'Bot version: {const.VERSION} | '
                 f'Bot status: {get_status()}')
     await BOT.change_presence(activity=Game(get_status()))
+
+
+@BOT.event
+async def on_guild_join(guild):
+    add_server(guild.id, guild.name)
+
+
+@BOT.event
+async def on_guild_remove(guild):
+    remove_server(guild.id)
 
 
 @BOT.event
