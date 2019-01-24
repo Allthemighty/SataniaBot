@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
+from src.secrets import DATABASE_URL
 from src import constants as const
 
 logger = const.logger
@@ -8,7 +9,7 @@ logger = const.logger
 
 def init_sessionmaker():
     try:
-        engine = create_engine(const.DATABASE_URL,
+        engine = create_engine(DATABASE_URL,
                                connect_args={'sslmode': 'require'},
                                pool_size=50)
         base = const.BASE

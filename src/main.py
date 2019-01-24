@@ -4,7 +4,8 @@ import traceback
 from discord import Game, Embed
 from discord.ext import commands
 
-from src import constants as const
+import src.constants as const
+from src.secrets import TOKEN
 from src.modules.misc.misc_util import get_status
 from src.modules.reaction.reaction_util import get_reactions
 from src.modules.server.server_util import get_server, refresh_servers, add_server, remove_server
@@ -93,4 +94,4 @@ async def on_error(event, *args):
     logger.error(f'Error in message: {message.content}\nEvent: {event}\n{traceback.format_exc()}')
 
 
-BOT.run(const.TOKEN)
+BOT.run(TOKEN)

@@ -1,17 +1,12 @@
 # coding=utf-8
 import logging
-import os
 import sys
 
 from discord.colour import Color
 from sqlalchemy.ext.declarative import declarative_base
 
-# SECRETS
-TOKEN = os.getenv('TOKEN')
-DATABASE_URL = os.getenv('DATABASE_URL')
-
 # MAIN
-VERSION = '5.1.7'
+VERSION = '5.1.8'
 BOT_PREFIX = '.'
 DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'
