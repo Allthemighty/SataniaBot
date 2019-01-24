@@ -1,4 +1,4 @@
-from db_connection import session
+from db_connection import Session
 from modules.server.server_model import Server
 
 
@@ -8,9 +8,12 @@ def get_server(server_id):
     :param server_id: Server id
     :return: Server object
     """
+    session = Session()
     query = session.query(Server)
     query = query.filter_by(server_id=server_id)
-    return query.first()
+    server = query.first()
+    session.close()
+    return server
 
 
 def get_servers():
@@ -18,7 +21,10 @@ def get_servers():
     Retrieve all the discord servers in the database
     :return: List of servers
     """
-    return session.query(Server).all()
+    session = Session()
+    servers = session.query(Server).all()
+    session.close()
+    return servers
 
 
 def add_server(server_id, server_name):
@@ -27,9 +33,11 @@ def add_server(server_id, server_name):
     :param server_id: Server id
     :param server_name: The server name
     """
+    session = Session()
     new_server = Server(server_id=server_id, server_name=server_name)
     session.add(new_server)
     session.commit()
+    session.close()
 
 
 def remove_server(server_id):
@@ -37,8 +45,10 @@ def remove_server(server_id):
     Deletes a server from the database
     :param server_id: Server id
     """
+    session = Session()
     session.query(Server).filter_by(server_id=server_id).delete()
     session.commit()
+    session.close()
 
 
 def refresh_servers(connected_servers, database_servers=get_servers()):
@@ -62,9 +72,11 @@ def set_message_chance(server_id, new_chance):
     :param server_id: Server id
     :param new_chance: What percentage to set it to
     """
+    session = Session()
     server = get_server(server_id)
     server.message_chance = new_chance
     session.commit()
+    session.close()
 
 
 def set_gif_chance(server_id, new_chance):
@@ -73,6 +85,8 @@ def set_gif_chance(server_id, new_chance):
     :param server_id: Server id
     :param new_chance: What percentage to set it to
     """
+    session = Session()
     server = get_server(server_id)
     server.gif_chance = new_chance
     session.commit()
+    session.close()

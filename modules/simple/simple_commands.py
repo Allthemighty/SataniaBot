@@ -4,6 +4,7 @@ import validators
 from discord import Game, Embed
 from discord.ext import commands
 
+import constants as const
 from modules.misc.misc_util import *
 
 

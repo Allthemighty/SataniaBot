@@ -2,8 +2,9 @@ import re
 
 from sqlalchemy import func
 
-from db_connection import *
+from db_connection import Session
 from modules.reaction.reaction_model import Reaction
+from constants import *
 
 
 def get_reactions(message, server_id, react_type='message'):
@@ -15,9 +16,11 @@ def get_reactions(message, server_id, react_type='message'):
     :param message: A string
     :return: A list of reactions,
     """
+    session = Session()
     query = session.query(Reaction.keyword, Reaction.url)
     query = query.filter_by(react_type=react_type, from_server=server_id)
     reactions = query.all()
+    session.close()
     matches = []
 
     for reaction in reactions:
@@ -39,9 +42,11 @@ def add_reaction(url, keyword, react_type, server_id):
     :param server_id: From which server the reaction belongs to
     """
     try:
+        session = Session()
         reaction = Reaction(url=url, keyword=keyword, react_type=react_type, from_server=server_id)
         session.add(reaction)
         session.commit()
+        session.close()
     except:
         logger.error('Error when commiting reaction to database')
 
@@ -51,8 +56,10 @@ def delete_reaction(reaction_id):
     Delete a reaction from the database
     :param reaction_id: The id of the reaction
     """
+    session = Session()
     session.query(Reaction).filter_by(reaction_id=reaction_id).delete()
     session.commit()
+    session.close()
 
 
 def get_reactions_paginated(low_bound, high_bound, server_id):
@@ -63,6 +70,7 @@ def get_reactions_paginated(low_bound, high_bound, server_id):
     :param server_id: From which server the reaction belongs to
     :return: list of reactions
     """
+    session = Session()
     row_number = func.row_number().over(order_by=Reaction.reaction_id)
     query = session.query(Reaction.reaction_id,
                           Reaction.url,
@@ -71,4 +79,6 @@ def get_reactions_paginated(low_bound, high_bound, server_id):
     query = query.filter_by(from_server=server_id)
     query = query.add_column(row_number)
     query = query.from_self().filter(row_number.between(low_bound, high_bound))
-    return query.all()
+    reactions = query.all()
+    session.close()
+    return reactions

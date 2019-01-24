@@ -4,7 +4,7 @@ import requests
 from discord.embeds import Colour
 from sqlalchemy import text
 
-from db_connection import *
+from db_connection import Session
 from modules.misc.misc_model import Misc
 
 
@@ -24,7 +24,9 @@ def connected_to_db():
     :return: Boolean
     """
     try:
+        session = Session()
         session.execute(text('SELECT 1'))
+        session.close()
         return True
     except:
         return False
@@ -35,8 +37,10 @@ def change_status(activity):
     Changes the playing status in the database
     :param activity:
     """
+    session = Session()
     session.query(Misc).first().status_playing = activity
     session.commit()
+    session.close()
 
 
 def get_status():
@@ -44,7 +48,9 @@ def get_status():
     Gets the playing status from the database
     :return: playing status
     """
-    return session.query(Misc).first().status_playing
+    session = Session()
+    status = session.query(Misc).first().status_playing
+    return status
 
 
 def get_discord_colors():
