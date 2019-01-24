@@ -6,7 +6,7 @@ from discord.colour import Color
 from sqlalchemy.ext.declarative import declarative_base
 
 # MAIN
-VERSION = '5.1.8'
+VERSION = '5.1.9'
 BOT_PREFIX = '.'
 DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'

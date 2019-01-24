@@ -6,7 +6,8 @@ from discord.ext import commands
 
 from src.modules.misc.misc_util import simple_check
 from src.modules.reaction.reaction_model import Reaction
-from src.modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
+from src.modules.reaction.reaction_util import add_reaction, delete_reaction, \
+    get_reactions_paginated
 from src.modules.server.server_util import set_message_chance, set_gif_chance
 
 
