@@ -1,3 +1,4 @@
+# coding=utf-8
 import logging
 import os
 import sys
@@ -10,7 +11,7 @@ TOKEN = os.getenv('TOKEN')
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 # MAIN
-VERSION = '5.1.6'
+VERSION = '5.1.7'
 BOT_PREFIX = '.'
 DESCRIPTION = 'Witty reactions, and gimmicky functions, Satania has it all!'
 BOT_MENTION_URL = '@386627978618077184'
