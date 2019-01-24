@@ -2,9 +2,9 @@ import re
 
 from sqlalchemy import func
 
-from db_connection import Session
-from modules.reaction.reaction_model import Reaction
-from constants import *
+from src.db_connection import Session
+from src.modules.reaction.reaction_model import Reaction
+from src.constants import *
 
 
 def get_reactions(message, server_id, react_type='message'):

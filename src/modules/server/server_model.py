@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, BigInteger, String
 
-import constants as const
+from src import constants as const
 
 
 class Server(const.BASE):

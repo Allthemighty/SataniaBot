@@ -4,8 +4,8 @@ import requests
 from discord.embeds import Colour
 from sqlalchemy import text
 
-from db_connection import Session
-from modules.misc.misc_model import Misc
+from src.db_connection import Session
+from src.modules.misc.misc_model import Misc
 
 
 def get_advice():

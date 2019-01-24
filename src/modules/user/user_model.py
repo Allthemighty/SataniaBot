@@ -1,6 +1,6 @@
 from sqlalchemy import Column, BigInteger, Integer, String
 
-import constants as const
+from src import constants as const
 
 
 class User(const.BASE):

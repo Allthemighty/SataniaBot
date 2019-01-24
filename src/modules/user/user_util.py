@@ -1,8 +1,8 @@
 from sqlalchemy import func
 
-import constants as const
-from db_connection import Session
-from modules.user.user_model import User
+from src import constants as const
+from src.db_connection import Session
+from src.modules.user.user_model import User
 
 logger = const.logger
 

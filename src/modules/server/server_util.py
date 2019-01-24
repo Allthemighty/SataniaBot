@@ -1,5 +1,5 @@
-from db_connection import Session
-from modules.server.server_model import Server
+from src.db_connection import Session
+from src.modules.server.server_model import Server
 
 
 def get_server(server_id):

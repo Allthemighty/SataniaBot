@@ -1,7 +1,7 @@
 from sqlalchemy import Column, BigInteger, Integer, String, ForeignKey
 from sqlalchemy.dialects.postgresql import ENUM
 
-import constants as const
+from src import constants as const
 
 
 class Reaction(const.BASE):

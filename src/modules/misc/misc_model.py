@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer
 
-import constants as const
+from src import constants as const
 
 
 class Misc(const.BASE):

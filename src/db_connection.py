@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-import constants as const
+from src import constants as const
 
 logger = const.logger
 
@@ -15,7 +15,7 @@ def init_sessionmaker():
         base.metadata.create_all(engine)
         return sessionmaker(bind=engine)
     except:
-        logger.error("Cannot connect to db")
+        logger.critical("Cannot connect to db")
 
 
 session_factory = init_sessionmaker()

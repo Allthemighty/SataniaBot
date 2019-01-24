@@ -4,11 +4,10 @@ import discord
 import validators
 from discord.ext import commands
 
-from db_connection import *
-from modules.misc.misc_util import simple_check
-from modules.reaction.reaction_model import Reaction
-from modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
-from modules.server.server_util import set_message_chance, set_gif_chance
+from src.modules.misc.misc_util import simple_check
+from src.modules.reaction.reaction_model import Reaction
+from src.modules.reaction.reaction_util import add_reaction, delete_reaction, get_reactions_paginated
+from src.modules.server.server_util import set_message_chance, set_gif_chance
 
 
 class Reactions:

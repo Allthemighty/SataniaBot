@@ -3,7 +3,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-from modules.user.user_util import *
+from src.modules.user.user_util import *
 
 
 class User:

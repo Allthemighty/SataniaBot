@@ -4,11 +4,11 @@ import traceback
 from discord import Game, Embed
 from discord.ext import commands
 
-import constants as const
-from modules.misc.misc_util import get_status
-from modules.reaction.reaction_util import get_reactions
-from modules.server.server_util import get_server, refresh_servers, add_server, remove_server
-from modules.user.user_util import user_exists, create_user, increment_reaction_counter
+from src import constants as const
+from src.modules.misc.misc_util import get_status
+from src.modules.reaction.reaction_util import get_reactions
+from src.modules.server.server_util import get_server, refresh_servers, add_server, remove_server
+from src.modules.user.user_util import user_exists, create_user, increment_reaction_counter
 
 BOT = commands.Bot(command_prefix=const.BOT_PREFIX, description=const.DESCRIPTION)
 logger = const.logger
