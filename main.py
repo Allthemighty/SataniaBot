@@ -17,24 +17,26 @@ logger = const.logger
 @BOT.event
 async def on_ready():
     """To be executed on startup"""
+    try:
+        # Initialize servers #
+        connected_servers = BOT.guilds
+        refresh_servers(connected_servers)
+        logger.info(f'Servers initialized')
 
-    # Initialize servers #
-    connected_servers = BOT.guilds
-    refresh_servers(connected_servers)
-    logger.info(f'Servers initialized')
+        # Load extensions #
+        BOT.load_extension('modules.simple.simple_commands')
+        BOT.load_extension('modules.reaction.reaction_commands')
+        BOT.load_extension('modules.user.user_commands')
+        logger.info(f'Extensions loaded')
 
-    # Load extensions #
-    BOT.load_extension('modules.simple.simple_commands')
-    BOT.load_extension('modules.reaction.reaction_commands')
-    BOT.load_extension('modules.user.user_commands')
-    logger.info(f'Extensions loaded')
-
-    # Bot information #
-    logger.info(f'Bot id: {BOT.user.id} | '
-                f'Bot name: {BOT.user.name}#{BOT.user.discriminator} | '
-                f'Bot version: {const.VERSION} | '
-                f'Bot status: {get_status()}')
-    await BOT.change_presence(activity=Game(get_status()))
+        # Bot information #
+        logger.info(f'Bot id: {BOT.user.id} | '
+                    f'Bot name: {BOT.user.name}#{BOT.user.discriminator} | '
+                    f'Bot version: {const.VERSION} | '
+                    f'Bot status: {get_status()}')
+        await BOT.change_presence(activity=Game(get_status()))
+    except:
+        logger.critical(f'Unable to complete starting sequence: {traceback.format_exc()}')
 
 
 @BOT.event
