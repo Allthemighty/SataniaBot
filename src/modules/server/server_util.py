@@ -22,7 +22,6 @@ def get_servers():
     """
     session = Session()
     servers = session.query(Server).all()
-    session.close()
     return servers
 
 
