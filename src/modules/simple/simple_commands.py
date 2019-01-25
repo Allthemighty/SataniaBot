@@ -129,7 +129,7 @@ class Simple:
                               " based on chance. This makes sure you don't get tired of a reaction"
                               " easily, and makes it more fun by turning it into a game.")
         embed.add_field(name='Author', value='This bot is developed by All#9999')
-        embed.add_field(name='Repository', value='https://bit.ly/2RjOYJk')
+        embed.add_field(name='Repository', value='https://bit.ly/2FYVIph')
         embed.set_footer(text=f'McDowell is running on version {const.VERSION}')
         await ctx.send(embed=embed)
 
