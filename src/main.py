@@ -6,7 +6,7 @@ from discord.ext import commands
 
 import src.constants as const
 from src.modules.misc.misc_util import get_status
-from src.modules.reaction.reaction_util import get_reactions
+from src.modules.reaction.reaction_util import get_matching_reactions
 from src.modules.server.server_util import get_server, refresh_servers, add_server, remove_server
 from src.modules.user.user_util import user_exists, create_user, increment_reaction_counter
 from src.secrets import TOKEN
@@ -67,9 +67,9 @@ async def on_message(message):
             if not user_exists(author):
                 create_user(author, message.author.name)
             if random_number <= server.gif_chance:
-                reaction_list = get_reactions(content, server_id, 'gif')
+                reaction_list = get_matching_reactions(content, server_id, 'gif')
             else:
-                reaction_list = get_reactions(content, server_id, 'message')
+                reaction_list = get_matching_reactions(content, server_id, 'message')
             if reaction_list:
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)

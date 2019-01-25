@@ -13,10 +13,10 @@ class User:
 
     @commands.command(aliases=['p'])
     async def profile(self, ctx):
-        """|Check how high your IQ is"""
+        """|Show how much reactions you triggered"""
         user = get_user(ctx.message.author.id)
         embed = discord.Embed(title=f"Profile for {user.dname}",
-                              description="Your stats for Satania's wonderful shenanigans",
+                              description="Your stats for McDowell",
                               color=const.EMBED_COLOR)
         embed.add_field(name="Reactions triggered", value=user.reactions_triggered, inline=True)
         await ctx.send(embed=embed)
@@ -25,7 +25,7 @@ class User:
 
     @commands.command(aliases=['lb'])
     async def leaderboard(self, ctx, page_count=1):
-        """|Shows the leaderboard for Satania statistics"""
+        """|Shows the leaderboard for McDowell statistics"""
         page_constant = 12
         low_bound = (page_count - 1) * page_constant + 1
         high_bound = page_constant * page_count

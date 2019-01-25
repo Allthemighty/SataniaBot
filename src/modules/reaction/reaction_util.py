@@ -7,7 +7,7 @@ from src.db_connection import Session
 from src.modules.reaction.reaction_model import Reaction
 
 
-def get_reactions(message, server_id, react_type='message'):
+def get_matching_reactions(message, server_id, react_type='message'):
     """
     Takes a message, and compares it against the database if it contains a matching keyword.
     All matches are reactions that will be returned.
@@ -31,6 +31,21 @@ def get_reactions(message, server_id, react_type='message'):
             matches.append(url)
     if matches:
         return matches
+
+
+def get_reaction(reaction_id, server_id):
+    """
+    Gets a reaction by its id
+    :param reaction_id: Reaction id
+    :param server_id: Server id
+    :return: Reaction object
+    """
+    session = Session()
+    query = session.query(Reaction)
+    query = query.filter_by(reaction_id=reaction_id, from_server=server_id)
+    reaction = query.first()
+    session.close()
+    return reaction
 
 
 def add_reaction(url, keyword, react_type, server_id):

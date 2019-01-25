@@ -4,10 +4,10 @@ import discord
 import validators
 from discord.ext import commands
 
+import src.constants as const
 from src.modules.misc.misc_util import simple_check
-from src.modules.reaction.reaction_model import Reaction
-from src.modules.reaction.reaction_util import add_reaction, delete_reaction, \
-    get_reactions_paginated
+from src.modules.reaction.reaction_util import (add_reaction, delete_reaction,
+                                                get_reactions_paginated, get_reaction)
 from src.modules.server.server_util import set_message_chance, set_gif_chance
 
 
@@ -41,8 +41,7 @@ class Reactions:
     async def showr(self, ctx, reaction_id):
         """|Show a specific reaction"""
         server_id = ctx.message.guild.id
-        reaction = session.query(Reaction).filter_by(reaction_id=reaction_id,
-                                                     from_server=server_id).first()
+        reaction = get_reaction(reaction_id, server_id)
         if reaction:
             embed = discord.Embed(title='Reaction preview', color=const.EMBED_COLOR,
                                   description=f'Showing reaction with ID {reaction.reaction_id}')

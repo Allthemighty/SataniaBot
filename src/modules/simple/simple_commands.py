@@ -35,7 +35,7 @@ class Simple:
     @commands.command()
     async def advice(self, ctx):
         """|Satania will give you her well thought out advice"""
-        await ctx.send(f"You asked for my assistance? Fine then, I'll help you: *{get_advice()}*")
+        await ctx.send(f"Hear my all-knowing advice: *{get_advice()}*")
 
     @commands.command()
     async def toc(self, ctx, temperature):
@@ -123,14 +123,14 @@ class Simple:
         """|Display some info about the bot"""
         embed = Embed(color=const.EMBED_COLOR)
         embed.add_field(name='About',
-                        value="Satania is a robust bot which adds custom reactions to your server. "
-                              "Unlike other bots however, Satania doesn't instantly respond "
-                              "whenever a keyword is mentioned, instead, this is all based on "
-                              "chance. This makes sure you don't get tired of a reaction easily, "
-                              "and makes it more fun by turning it into a game.")
+                        value="McDowell is a bot which adds custom reactions to your server in "
+                              "an elegant way. Unlike other bots however, McDowell doesn't instantly"
+                              " respond whenever a keyword is mentioned, instead, this is all"
+                              " based on chance. This makes sure you don't get tired of a reaction"
+                              " easily, and makes it more fun by turning it into a game.")
         embed.add_field(name='Author', value='This bot is developed by All#9999')
         embed.add_field(name='Repository', value='https://bit.ly/2RjOYJk')
-        embed.set_footer(text=f'Satania is running on version {const.VERSION}')
+        embed.set_footer(text=f'McDowell is running on version {const.VERSION}')
         await ctx.send(embed=embed)
 
 
