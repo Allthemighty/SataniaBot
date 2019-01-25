@@ -12,7 +12,6 @@ def get_server(server_id):
     query = session.query(Server)
     query = query.filter_by(server_id=server_id)
     server = query.first()
-    session.close()
     return server
 
 

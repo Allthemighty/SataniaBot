@@ -34,8 +34,10 @@ class User:
         embed = discord.Embed(title="Leaderboard", color=const.EMBED_COLOR)
         for row in users:
             user, ranking = row[0], row[1]
-            value_field = f"Reactions triggered: {user.reactions_triggered}"
-            embed.add_field(name=f"#{ranking} {user.dname[:20]}", value=value_field, inline=True)
+            if user.reactions_triggered > 0:
+                embed.add_field(name=f"#{ranking} {user.dname[:20]}",
+                                value=f'Reactions triggered: {user.reactions_triggered}',
+                                inline=True)
         embed.set_footer(text=f"Page {page_count}")
         await ctx.send(embed=embed)
         await asyncio.sleep(const.DELETE_TIME)

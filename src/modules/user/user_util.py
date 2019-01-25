@@ -29,7 +29,6 @@ def get_user(discord_id):
     query = session.query(User)
     query = query.filter_by(did=discord_id)
     user = query.first()
-    session.close()
     return user
 
 
