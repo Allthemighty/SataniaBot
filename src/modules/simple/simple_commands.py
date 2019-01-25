@@ -34,7 +34,7 @@ class Simple:
 
     @commands.command()
     async def advice(self, ctx):
-        """|Satania will give you her well thought out advice"""
+        """|McDowell will give you her well thought out advice"""
         await ctx.send(f"Hear my all-knowing advice: *{get_advice()}*")
 
     @commands.command()
