@@ -83,7 +83,11 @@ def is_hex_color(hex_color):
 
 
 def hex_to_rgb(hex_color):
-    """Converts a hex color code to RGB, to a Discord Color"""
+    """
+    Converts a hex color code to RGB, to a Discord Color
+    :param hex_color: Hex color code, includes a #
+    :return: Discord color in RGB
+    """
     hex_code = hex_color.lstrip('#')
     rgb_color = tuple(int(hex_code[i:i + 2], 16) for i in (0, 2, 4))
     return Colour.from_rgb(rgb_color[0], rgb_color[1], rgb_color[2])
@@ -93,9 +97,9 @@ def simple_check(author, channel):
     """
     A predicate used in the wait_for() function, to ensure the user input can only come
     from the user who activated the command, and in the same channel.
-    :param author:
-    :param channel:
-    :return: check function
+    :param author: Author object
+    :param channel: Channel object
+    :return: Check function
     """
 
     def check(message):

@@ -29,6 +29,7 @@ class Simple:
     @commands.command(hidden=True)
     @commands.is_owner()
     async def status(self, ctx, *, activity):
+        """|Change the status that the bot is displaying"""
         change_status(activity)
         await self.bot.change_presence(activity=Game(activity))
 
