@@ -19,7 +19,7 @@ McDowell is open-source, which means you are free to take this code, make some m
  1. Create a discord bot application, and retrieve its token. This will go in the secrets.py file.
  2. Setup your PostgreSQL database (other database should work, but might require some code tweaking).  The structure of the database can be deferred from the model classes in the code. But if that's too much work, there's also a [database creation script](https://gist.github.com/MichaelVerdegaal/624a31cf72143a4463de2170d7aeca0b) available (Postgres only).
  3. Build your database url, and put it in secrets.py. 
- 4. Run to main.py to start the bot.
+ 4. Run main.py to start the bot.
 
 ### Heroku
 
