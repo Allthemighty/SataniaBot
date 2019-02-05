@@ -1,5 +1,4 @@
 import random
-import traceback
 
 from discord import Game, Embed
 from discord.ext import commands
@@ -37,7 +36,7 @@ async def on_ready():
                     f'Bot status: {get_status()}')
         await BOT.change_presence(activity=Game(get_status()))
     except:
-        logger.critical(f'Unable to complete starting sequence: {traceback.format_exc()}')
+        logger.exception('Unable to complete starting sequence', exc_info=True)
 
 
 @BOT.event
@@ -91,7 +90,7 @@ async def on_command_error(ctx, error):
 @BOT.event
 async def on_error(event, *args):
     message = args[0]
-    logger.error(f'Error in message: {message.content}\nEvent: {event}\n{traceback.format_exc()}')
+    logger.error(f'Error in message: {message.content}\nEvent: {event}', exc_info=True)
 
 
 BOT.run(TOKEN)

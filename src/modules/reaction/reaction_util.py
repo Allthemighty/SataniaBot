@@ -63,7 +63,7 @@ def add_reaction(url, keyword, react_type, server_id):
         session.commit()
         session.close()
     except:
-        logger.error('Error when commiting reaction to database')
+        logger.error('Error when commiting reaction to database', exc_info=True)
 
 
 def delete_reaction(reaction_id):
