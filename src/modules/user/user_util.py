@@ -26,9 +26,7 @@ def get_user(discord_id):
     :return: User
     """
     session = Session()
-    query = session.query(User)
-    query = query.filter_by(did=discord_id)
-    user = query.first()
+    user = session.query(User).filter_by(did=discord_id).first()
     return user
 
 
