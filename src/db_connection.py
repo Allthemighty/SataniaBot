@@ -1,5 +1,3 @@
-import traceback
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -18,7 +16,7 @@ def init_sessionmaker():
         base.metadata.create_all(engine)
         return sessionmaker(bind=engine)
     except:
-        logger.critical(f'Cannot connect to database: {traceback.format_exc()}')
+        logger.critical(f'Cannot connect to database', exc_info=True)
 
 
 session_factory = init_sessionmaker()
