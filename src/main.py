@@ -41,17 +41,19 @@ async def on_ready():
 
 @BOT.event
 async def on_guild_join(guild):
+    """Add server to database on server join"""
     add_server(guild.id, guild.name)
 
 
 @BOT.event
 async def on_guild_remove(guild):
+    """Remove server from database on server leave"""
     remove_server(guild.id)
 
 
 @BOT.event
 async def on_message(message):
-    """This is what the bot does whenever a new message is posted"""
+    """Main reaction management logic"""
     author = message.author.id
     random_number = random.randint(1, 100)
     content = message.content
@@ -61,7 +63,7 @@ async def on_message(message):
         server = get_server(server_id)
         if const.BOT_MENTION_URL in content:
             await message.channel.send(
-                f"To use Satania, type **{const.BOT_PREFIX}help** for a list of commands")
+                f"To use McDowell, type **{const.BOT_PREFIX}help** for a list of commands")
         elif random_number <= server.message_chance:
             if not user_exists(author):
                 create_user(author, message.author.name)
@@ -78,6 +80,7 @@ async def on_message(message):
 
 @BOT.event
 async def on_command_error(ctx, error):
+    """Correct user when a command is not activated the right way"""
     if isinstance(error, commands.errors.MissingRequiredArgument) or \
             isinstance(error, commands.errors.BadArgument):
         name = ctx.author.display_name
@@ -89,6 +92,7 @@ async def on_command_error(ctx, error):
 
 @BOT.event
 async def on_error(event, *args):
+    """Log specific message plus stracktrace that produces an error"""
     message = args[0]
     logger.error(f'Error in message: {message.content}\nEvent: {event}', exc_info=True)
 
