@@ -17,7 +17,7 @@ def get_matching_reactions(message, server_id, react_type='message'):
     :return: A list of reactions,
     """
     session = Session()
-    query = session.query(Reaction.keyword, Reaction.url)
+    query = session.query(Reaction.keyword, Reaction.answer)
     query = query.filter_by(react_type=react_type, from_server=server_id)
     reactions = query.all()
     session.close()
@@ -25,10 +25,10 @@ def get_matching_reactions(message, server_id, react_type='message'):
 
     for reaction in reactions:
         keyword = reaction[0]
-        url = reaction[1]
+        answer = reaction[1]
         match = re.search(r"\b{}\b".format(keyword), message, re.IGNORECASE | re.M)
         if match:
-            matches.append(url)
+            matches.append(answer)
     if matches:
         return matches
 
@@ -48,17 +48,17 @@ def get_reaction(reaction_id, server_id):
     return reaction
 
 
-def add_reaction(url, keyword, react_type, server_id):
+def add_reaction(answer, keyword, react_type, server_id):
     """
     Add a reaction to the database
-    :param url: What to send back when sending a message as response
+    :param answer: What to send back as response
     :param keyword: On what keyword to match
     :param react_type: Whether the reaction to be sent is a gif or a normal message
     :param server_id: From which server the reaction belongs to
     """
     try:
         session = Session()
-        reaction = Reaction(url=url, keyword=keyword, react_type=react_type, from_server=server_id)
+        reaction = Reaction(answer=answer, keyword=keyword, react_type=react_type, from_server=server_id)
         session.add(reaction)
         session.commit()
         session.close()
@@ -88,7 +88,7 @@ def get_reactions_paginated(low_bound, high_bound, server_id):
     session = Session()
     row_number = func.row_number().over(order_by=Reaction.reaction_id)
     query = session.query(Reaction.reaction_id,
-                          Reaction.url,
+                          Reaction.answer,
                           Reaction.keyword,
                           Reaction.from_server)
     query = query.filter_by(from_server=server_id)
