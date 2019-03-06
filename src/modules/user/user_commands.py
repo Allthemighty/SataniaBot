@@ -15,10 +15,10 @@ class User:
     async def profile(self, ctx):
         """|Show how much reactions you triggered"""
         user = get_user(ctx.message.author.id)
-        embed = discord.Embed(title=f"Profile for {user.dname}",
+        embed = discord.Embed(title=f"Profile for {user.username}",
                               description="Your stats for McDowell",
                               color=const.EMBED_COLOR)
-        embed.add_field(name="Reactions triggered", value=user.reactions_triggered, inline=True)
+        embed.add_field(name="Reactions triggered", value=user.reaction_count, inline=True)
         await ctx.send(embed=embed)
         await asyncio.sleep(const.DELETE_TIME)
         await ctx.message.delete()
@@ -34,9 +34,9 @@ class User:
         embed = discord.Embed(title="Leaderboard", color=const.EMBED_COLOR)
         for row in users:
             user, ranking = row[0], row[1]
-            if user.reactions_triggered > 0:
-                embed.add_field(name=f"#{ranking} {user.dname[:20]}",
-                                value=f'Reactions triggered: {user.reactions_triggered}',
+            if user.reaction_count > 0:
+                embed.add_field(name=f"#{ranking} {user.username[:20]}",
+                                value=f'Reactions triggered: {user.reaction_count}',
                                 inline=True)
         embed.set_footer(text=f"Page {page_count}")
         await ctx.send(embed=embed)

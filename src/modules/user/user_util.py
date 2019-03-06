@@ -14,7 +14,7 @@ def user_exists(discord_id):
     :return: Boolean
     """
     session = Session()
-    row = session.query(User).filter_by(did=discord_id).first()
+    row = session.query(User).filter_by(uid=discord_id).first()
     session.close()
     return True if row else False
 
@@ -26,19 +26,19 @@ def get_user(discord_id):
     :return: User
     """
     session = Session()
-    user = session.query(User).filter_by(did=discord_id).first()
+    user = session.query(User).filter_by(uid=discord_id).first()
     return user
 
 
-def create_user(discord_id, discord_name, reactions_triggered=0):
+def create_user(discord_id, discord_name, reaction_count=0):
     """
     Create an user
     :param discord_id: Discord id
     :param discord_name: Discord name (not nickname)
-    :param reactions_triggered: Amount of reactions that user triggered
+    :param reaction_count: Amount of reactions that user triggered
     """
     session = Session()
-    user = User(did=discord_id, dname=discord_name, reactions_triggered=reactions_triggered)
+    user = User(uid=discord_id, username=discord_name, reaction_count=reaction_count)
     session.add(user)
     session.commit()
     session.close()
@@ -53,7 +53,7 @@ def increment_reaction_counter(discord_id, inc_score):
     """
     session = Session()
     user = get_user(discord_id)
-    user.reactions_triggered += inc_score
+    user.reaction_count += inc_score
     session.commit()
     session.close()
 
@@ -66,7 +66,7 @@ def get_users_paginated(low_bound, high_bound):
     :return: list of users
     """
     session = Session()
-    order = (User.reactions_triggered.desc(), User.dname)
+    order = (User.reaction_count.desc(), User.username)
     row_number = func.row_number().over(order_by=order)
     query = session.query(User)
     query = query.add_column(row_number)

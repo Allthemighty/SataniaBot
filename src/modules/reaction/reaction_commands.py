@@ -27,10 +27,11 @@ class Reactions:
         if reactions:
             embed = discord.Embed(title="Reaction list", color=const.EMBED_COLOR)
             for reaction in reactions:
-                url = reaction.url if len(reaction.url) <= 20 else reaction.url[:17] + "..."
+                answer = (reaction.answer if len(reaction.answer) <= 20
+                          else reaction.answer[:17] + "...")
                 keyword = reaction.keyword
                 embed.add_field(name=f'#{reaction.reaction_id} Keyword: {keyword}',
-                                value=f'{url}',
+                                value=f'{answer}',
                                 inline=True)
             embed.set_footer(text=f'Page {page_count}')
             await ctx.send(embed=embed)
@@ -45,7 +46,7 @@ class Reactions:
         if reaction:
             embed = discord.Embed(title='Reaction preview', color=const.EMBED_COLOR,
                                   description=f'Showing reaction with ID {reaction.reaction_id}')
-            embed.add_field(name=f"{reaction.keyword}", value=f'{reaction.url}', inline=True)
+            embed.add_field(name=f"{reaction.keyword}", value=f'{reaction.answer}', inline=True)
             await ctx.send(embed=embed)
         else:
             await ctx.send("Can't find a reaction with that ID")
@@ -65,7 +66,7 @@ class Reactions:
             await ctx.send('Please type the keyword on which this reaction should trigger')
             keyword = await self.bot.wait_for('message', timeout=30.0, check=new_check)
 
-            add_reaction(url=url.content,
+            add_reaction(answer=url.content,
                          keyword=keyword.content,
                          react_type=react_type,
                          server_id=server_id)
