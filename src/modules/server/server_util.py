@@ -82,14 +82,14 @@ def set_message_chance(server_id, new_chance):
     session.close()
 
 
-def set_gif_chance(server_id, new_chance):
+def set_image_chance(server_id, new_chance):
     """
-    Set the gif chance percentage of a server
+    Set the image chance percentage of a server
     :param server_id: Server id
     :param new_chance: What percentage to set it to
     """
     session = Session()
     server = get_server(server_id)
-    server.gif_chance = new_chance
+    server.image_chance = new_chance
     session.commit()
     session.close()
