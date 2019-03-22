@@ -6,9 +6,8 @@ from discord.ext import commands
 
 import src.constants as const
 from src.modules.misc.misc_util import simple_check
-from src.modules.reaction.reaction_util import (add_reaction, delete_reaction,
-                                                get_reactions_paginated, get_reaction)
-from src.modules.server.server_util import set_message_chance, set_gif_chance
+from src.modules.reaction.reaction_util import *
+from src.modules.server.server_util import set_message_chance, set_image_chance
 
 
 class Reactions:
@@ -59,7 +58,7 @@ class Reactions:
             new_check = simple_check(ctx.author, ctx.channel)
             server_id = ctx.message.guild.id
 
-            await ctx.send('Please type the message/url you want to add')
+            await ctx.send('Please type the message or image/url you want to add')
             url = await self.bot.wait_for('message', timeout=30.0, check=new_check)
             react_type = 'gif' if validators.url(url.content) else 'message'
 
@@ -79,7 +78,38 @@ class Reactions:
     async def deleter(self, ctx, reaction_id):
         """|Delete a reaction."""
         delete_reaction(reaction_id)
-        await ctx.send(f'Reaction #{reaction_id} deleted')
+        await ctx.send(f'Reaction #{reaction_id} deleted.')
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def editr(self, ctx, reaction_id):
+        """|Edit a reaction."""
+        new_check = simple_check(ctx.author, ctx.channel)
+        server_id = ctx.message.guild.id
+        reaction = get_reaction(reaction_id, server_id)
+
+        if reaction:
+            await ctx.send('Do you want to edit the keyword or the answer?\n'
+                           'Type **0**: to change the keyword\n'
+                           'Type **1**: to change the answer content')
+            type_prompt = await self.bot.wait_for('message', timeout=30.0, check=new_check)
+
+            if type_prompt.content not in ['0', '1']:
+                await ctx.send('This is not a valid answer, type either a "0" or a "1"')
+
+            elif type_prompt.content == '0':
+                await ctx.send('Please type the new keyword.')
+                keyword_prompt = await self.bot.wait_for('message', timeout=30.0, check=new_check)
+                update_keyword(reaction_id, server_id, keyword_prompt.content)
+                await ctx.send(f'Successfully updated keyword to {keyword_prompt.content}.')
+
+            elif type_prompt.content == '1':
+                await ctx.send('Please type the new answer content.')
+                answer_prompt = await self.bot.wait_for('message', timeout=30.0, check=new_check)
+                update_answer(reaction_id, server_id, answer_prompt.content)
+                await ctx.send(f'Successfully updated answer content to {answer_prompt.content}.')
+        else:
+            await ctx.send('No reaction found with that id.')
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -111,7 +141,7 @@ class Reactions:
                     set_message_chance(server_id, percentage)
                     await ctx.send(f'New message chance successfully set to {percentage}%')
                 elif type_prompt == '1':
-                    set_gif_chance(server_id, percentage)
+                    set_image_chance(server_id, percentage)
                     await ctx.send(f'New image chance successfully set to {percentage}%')
         except TimeoutError:
             await ctx.send('No response received, aborting command.')

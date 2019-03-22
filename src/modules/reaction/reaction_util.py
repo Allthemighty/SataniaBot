@@ -44,7 +44,6 @@ def get_reaction(reaction_id, server_id):
     query = session.query(Reaction)
     query = query.filter_by(reaction_id=reaction_id, from_server=server_id)
     reaction = query.first()
-    session.close()
     return reaction
 
 
@@ -58,7 +57,8 @@ def add_reaction(answer, keyword, react_type, server_id):
     """
     try:
         session = Session()
-        reaction = Reaction(answer=answer, keyword=keyword, react_type=react_type, from_server=server_id)
+        reaction = Reaction(answer=answer, keyword=keyword, react_type=react_type,
+                            from_server=server_id)
         session.add(reaction)
         session.commit()
         session.close()
@@ -73,6 +73,36 @@ def delete_reaction(reaction_id):
     """
     session = Session()
     session.query(Reaction).filter_by(reaction_id=reaction_id).delete()
+    session.commit()
+    session.close()
+
+
+def update_keyword(reaction_id, server_id, keyword):
+    """
+    Update the keyword of a reaction
+    :param reaction_id: Reaction id
+    :param server_id: Server id
+    :param keyword: Keyword to update
+    """
+    session = Session()
+    reaction = session.query(Reaction).filter_by(reaction_id=reaction_id,
+                                                 from_server=server_id).first()
+    reaction.keyword = keyword
+    session.commit()
+    session.close()
+
+
+def update_answer(reaction_id, server_id, answer):
+    """
+    Update the keyword of a reaction
+    :param reaction_id: Reaction id
+    :param server_id: Server id
+    :param answer: Answer to update
+    """
+    session = Session()
+    reaction = session.query(Reaction).filter_by(reaction_id=reaction_id,
+                                                 from_server=server_id).first()
+    reaction.answer = answer
     session.commit()
     session.close()
 

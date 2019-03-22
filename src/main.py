@@ -67,7 +67,7 @@ async def on_message(message):
         elif random_number <= server.message_chance:
             if not user_exists(author):
                 create_user(author, message.author.name)
-            if random_number <= server.gif_chance:
+            if random_number <= server.image_chance:
                 reaction_list = get_matching_reactions(content, server_id, 'gif')
             else:
                 reaction_list = get_matching_reactions(content, server_id, 'message')
