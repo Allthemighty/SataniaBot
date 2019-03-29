@@ -65,13 +65,13 @@ async def on_message(message):
             await message.channel.send(
                 f"To use McDowell, type **{const.BOT_PREFIX}help** for a list of commands")
         elif random_number <= server.message_chance:
-            if not user_exists(author):
-                create_user(author, message.author.name)
             if random_number <= server.image_chance:
                 reaction_list = get_matching_reactions(content, server_id, 'gif')
             else:
                 reaction_list = get_matching_reactions(content, server_id, 'message')
             if reaction_list:
+                if not user_exists(author):
+                    create_user(author, message.author.name, server_id)
                 reaction = random.choice(reaction_list)
                 await message.channel.send(reaction)
                 increment_reaction_counter(author, 1)

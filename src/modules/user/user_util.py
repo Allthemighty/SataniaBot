@@ -30,19 +30,23 @@ def get_user(discord_id):
     return user
 
 
-def create_user(discord_id, discord_name, reaction_count=0):
+def create_user(discord_id, discord_name, server_id, reaction_count=0):
     """
-    Create an user
+    Create an user and post it to the database
     :param discord_id: Discord id
     :param discord_name: Discord name (not nickname)
+    :param server_id: From which server the user comes
     :param reaction_count: Amount of reactions that user triggered
     """
     session = Session()
-    user = User(uid=discord_id, username=discord_name, reaction_count=reaction_count)
+    user = User(uid=discord_id,
+                username=discord_name,
+                from_server=server_id,
+                reaction_count=reaction_count)
     session.add(user)
     session.commit()
     session.close()
-    logger.info(f"Posted user to DB | {discord_id}: {discord_name}")
+    logger.info(f"Posted user to DB | {discord_id}: {discord_name} [{server_id}]")
 
 
 def increment_reaction_counter(discord_id, inc_score):

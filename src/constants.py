@@ -6,7 +6,7 @@ from discord.colour import Color
 from sqlalchemy.ext.declarative import declarative_base
 
 # MAIN
-VERSION = '5.2.1'
+VERSION = '5.2.2'
 BOT_PREFIX = ',,'
 DESCRIPTION = 'The only custom reaction bot you\'ll ever need'
 BOT_MENTION_URL = '@386627978618077184'
