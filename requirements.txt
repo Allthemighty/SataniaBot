@@ -3,3 +3,4 @@ git+https://github.com/requests/requests
 psycopg2-binary
 validators
 SQLAlchemy
+ezstr
